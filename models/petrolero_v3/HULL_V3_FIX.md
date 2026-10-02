@@ -21,3 +21,12 @@ completa cubierta->quilla con g=1-fz; banda negra fz en [0, 1-wl], roja
 estribor en orden inverso (normales exteriores).
 Verificado: seccion media wl=18.98mm / quilla=15.48mm (PASS), obra viva
 z[-13,0], popa renderizada correcta (render_stern_v31.png).
+
+## V3.2 — Superstructura por gradines + flotantes eliminados
+Problemas (foto usuario): castillo era una losa unica irreconLista; botes/davits
+fuera de la huella del bloque (flotando); bocinas separadas del casco; railing
+superior fuera de la losa; ala de puente volada sin soporte.
+Fix: N1/N2/deckhouse/puente con retranqueos progresivos; alas con soporte
+diagonal; cubierta superior a huella de N2; botes sobre boat-deck (techo N2)
+en y=+-B*0.24; bocinas en y=+-B*0.24 (casco popa); escalera apoyada en cara
+de proa de N1. 455 obj, 455/455 manifold.

@@ -303,21 +303,30 @@ for k in range(5):
     for side in (-1, 1):
         cyl(f"Bitas_{k}_{side}", (xx, side * B * 0.455, F + 1.8), 0.75, 3.0, M_HULL, verts=10)
 
-# ================= SUPERESTRUCTURA =================
+# ================= SUPERESTRUCTURA (V3.2: castillo por gradines, sin flotantes) =================
 ssx = L * 0.105
-cube("SS_N1", (ssx, 0, F + 8.5), (L * 0.19, B * 0.84, 16), M_WHITE)
-cube("SS_N2", (ssx + L*0.01, 0, F + 15.5), (L * 0.15, B * 0.80, 6.5), M_WHITE)
-cube("Puente", (ssx + L*0.075, 0, F + 20.5), (L * 0.085, B * 0.97, 5.0), M_WHITE)
-cube("Ala_E", (ssx + L*0.115, B*0.475, F + 20.0), (L*0.035, B*0.07, 4.2), M_WHITE)
-cube("Ala_B", (ssx + L*0.115, -B*0.475, F + 20.0), (L*0.035, B*0.07, 4.2), M_WHITE)
-cube("SS_cubierta_sup", (ssx, 0, F + 23.3), (L * 0.13, B * 0.78, 0.7), M_DECK)
-for zi, zw in ((F + 20.2, 1.3), (F + 21.6, 1.2), (F + 14.8, 1.1), (F + 11.0, 1.0)):
-    w = B * 0.90 if zi > F + 19 else B * 0.72
-    cube("Ventanas", (ssx + L * (0.118 if zi > F + 19 else 0.048), 0, zi), (0.7, w, zw), M_DARK)
-cube("Puerta_SS", (ssx + L*0.096, -B*0.2, F + 5.0), (0.8, 3.2, 5.5), M_DARK)
-stairs("Escalera_SS", ssx + L*0.10, B * 0.30, F + 0.7, F + 15.5, 2.6, M_METAL)
-rail_run("RailSS", ssx - L*0.06, ssx + L*0.10, B*0.40, F + 23.6, M_WHITE)
-rail_run("RailSS_b", ssx - L*0.06, ssx + L*0.10, -B*0.40, F + 23.6, M_WHITE)
+N1 = cube("SS_N1", (ssx, 0, F + 6.5), (L * 0.155, B * 0.72, 13), M_WHITE)
+N2 = cube("SS_N2", (ssx + L*0.008, 0, F + 14.2), (L * 0.115, B * 0.64, 5.4), M_WHITE)
+DH = cube("SS_DH", (ssx + L*0.016, 0, F + 18.2), (L * 0.085, B * 0.56, 3.4), M_WHITE)
+PB = cube("Puente", (ssx + L*0.055, 0, F + 21.6), (L * 0.075, B * 0.88, 3.6), M_WHITE)
+# alas de puente: cortas y con soporte diagonal (nada volado sin apoyo)
+for side in (-1, 1):
+    cube(f"Ala_{side}", (ssx + L*0.085, side*B*0.465, F + 21.3), (L*0.03, B*0.07, 3.0), M_WHITE)
+    cyl(f"Ala_sop_{side}", (ssx + L*0.075, side*B*0.44, F + 19.8), 0.3, 4.5, M_WHITE,
+        rot=(math.radians(35)*side, 0, 0), verts=8)
+# cubierta superior a la huella de N2 (sin voladizos); railing inset dentro de la losa
+cube("SS_cubierta_sup", (ssx + L*0.008, 0, F + 17.15), (L * 0.115, B * 0.64, 0.6), M_DECK)
+N1_TOP = F + 13.0
+N2_TOP = F + 17.15
+for zi, zw, ww in ((F + 21.5, 1.2, B*0.84), (F + 18.4, 1.0, B*0.52),
+                   (F + 14.0, 1.0, B*0.60), (F + 9.0, 1.0, B*0.68)):
+    xoff = 0.093 if zi > F + 20 else (0.058 if zi > F + 16 else (0.066 if zi > F + 12 else 0.083))
+    cube("Ventanas", (ssx + L*xoff, 0, zi), (0.7, ww, zw), M_DARK)
+cube("Puerta_SS", (ssx + L*0.078, -B*0.2, F + 4.0), (0.8, 3.0, 5.0), M_DARK)
+# escalera exterior apoyada en la cara de proa de N1
+stairs("Escalera_SS", ssx + L*0.079, B * 0.26, F + 0.7, F + 13.0, 2.4, M_METAL)
+rail_run("RailSS", ssx - L*0.045, ssx + L*0.06, B*0.27, N2_TOP + 0.3, M_WHITE)
+rail_run("RailSS_b", ssx - L*0.045, ssx + L*0.06, -B*0.27, N2_TOP + 0.3, M_WHITE)
 
 # ================= CHIMENEA =================
 fx = ssx - L * 0.055
@@ -339,19 +348,20 @@ sph("Luz_proa", (L * 0.905, 0, F + 18.6), (0.5, 0.5, 0.5), M_ORANGE)
 cyl("Mastil_popa", (fx + 2, 0, F + 39), 0.35, 8, M_METAL, verts=8)
 cyl("Antena_popa", (fx + 2, 0, F + 43.5), 0.1, 3.5, M_METAL, verts=6)
 
-# ================= BOTES SALVAVIDAS =================
+# ================= BOTES SALVAVIDAS (V3.2: sobre cubierta de botes = techo de N2) =================
 _lb = P["lifeboat_scale"]
+BOAT_DECK = F + 17.45          # sobre SS_cubierta_sup (techo de N2)
 for side in (-1, 1):
-    yy = side * B * 0.44
-    bx = ssx + L * 0.205
-    cyl(f"Bote_{side}", (bx, yy, F + 17.0), 1.5*_lb, 8.0*_lb, M_ORANGE,
+    yy = side * B * 0.24        # dentro de la huella de N2 (media manga 12.8)
+    bx = ssx + L * 0.008
+    cyl(f"Bote_{side}", (bx, yy, BOAT_DECK + 1.2*_lb), 1.5*_lb, 8.0*_lb, M_ORANGE,
         rot=(0, math.radians(90), 0), verts=12)
-    sph(f"Bote_proa_{side}", (bx + 4.0*_lb, yy, F + 17.0), (1.2*_lb, 1.5*_lb, 1.5*_lb), M_ORANGE)
-    sph(f"Bote_popa_{side}", (bx - 4.0*_lb, yy, F + 17.0), (1.2*_lb, 1.5*_lb, 1.5*_lb), M_ORANGE)
-    cube(f"Bote_cabina_{side}", (bx, yy, F + 18.3), (3.5*_lb, 1.6*_lb, 1.2*_lb), M_WHITE)
+    sph(f"Bote_proa_{side}", (bx + 4.0*_lb, yy, BOAT_DECK + 1.2*_lb), (1.2*_lb, 1.5*_lb, 1.5*_lb), M_ORANGE)
+    sph(f"Bote_popa_{side}", (bx - 4.0*_lb, yy, BOAT_DECK + 1.2*_lb), (1.2*_lb, 1.5*_lb, 1.5*_lb), M_ORANGE)
+    cube(f"Bote_cabina_{side}", (bx, yy, BOAT_DECK + 2.5*_lb), (3.5*_lb, 1.6*_lb, 1.2*_lb), M_WHITE)
     for dx in (-3.2, 3.2):
-        cyl(f"Davit_{side}_{dx}", (bx + dx, yy, F + 20.2), 0.28, 6.0, M_WHITE, verts=8)
-        cyl(f"Davit_brazo_{side}_{dx}", (bx + dx, yy, F + 23.0), 0.24, 3.2, M_WHITE,
+        cyl(f"Davit_{side}_{dx}", (bx + dx, yy, BOAT_DECK + 3.0), 0.28, 6.0, M_WHITE, verts=8)
+        cyl(f"Davit_brazo_{side}_{dx}", (bx + dx, yy, BOAT_DECK + 6.0), 0.24, 3.2, M_WHITE,
             rot=(math.radians(90), 0, 0), verts=6)
 
 # ================= RAILING =================
