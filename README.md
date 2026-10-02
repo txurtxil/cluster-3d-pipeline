@@ -15,3 +15,8 @@ Coder (Qwen3-Coder-30B @ bc250:8081), orquestacion OpenClaw (rpi5).
   tanker_confidence 0.95 (Qwen3-VL-8B). V1 en models/petrolero_v1.
 
 Regla de oro: el LLM propone, Blender construye, las metricas deciden.
+
+## Calidad alta (preset)
+render_export.py acepta RENDER_RES / RENDER_SAMPLES / RENDER_DENOISE (env).
+Ejemplo: RENDER_RES=1024 RENDER_SAMPLES=64 RENDER_DENOISE=1 -> renders sin grano
+(modelos/petrolero_v3/render_high_*.png).

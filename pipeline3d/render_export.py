@@ -17,7 +17,8 @@ sc.render.engine = 'CYCLES'
 sc.cycles.samples = 32
 sc.cycles.use_denoising = False
 sc.cycles.device = 'CPU'
-sc.render.resolution_x = sc.render.resolution_y = 512
+_res = int(os.environ.get("RENDER_RES", "512"))
+sc.render.resolution_x = sc.render.resolution_y = _res
 sc.render.resolution_percentage = 100
 sc.render.image_settings.file_format = 'PNG'
 
