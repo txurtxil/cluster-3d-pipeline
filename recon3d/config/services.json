@@ -1,0 +1,41 @@
+{
+ "_doc": "Configuracion central UNICA del pipeline (auditoria 2026-10-02). Los clientes leen de aqui; prohibido hardcodear endpoints.",
+ "auth": {
+  "api_key": "sk-cluster-72ce643cae6f7db766ded5b32c985611"
+ },
+ "coder": {
+  "host": "192.168.10.23",
+  "host_external": "mundaka.net",
+  "port_external": 8022,
+  "port": 8081,
+  "model": "Qwen3-Coder-30B-A3B-Instruct-UD-IQ2_XXS.gguf",
+  "required": true
+ },
+ "vlm": {
+  "host": "127.0.0.1",
+  "host_note": "VLM en z1; clientes ejecutan en z1. Desde el contenedor: via ssh z1.",
+  "port": 8084,
+  "model": "Qwen3VL-8B-Instruct-Q4_K_M.gguf",
+  "model_path": "/home/txurtxil/models/vlm/Qwen3VL-8B-Instruct-Q4_K_M.gguf",
+  "mmproj": "/home/txurtxil/models/vlm/mmproj-Qwen3VL-8B-Instruct-F16.gguf",
+  "required": false,
+  "mode": "bajo_demanda (start_vlm_z1.sh / stop_vlm_z1.sh); secuencial respecto a Blender"
+ },
+ "blender": {
+  "host": "z1",
+  "host_external": "mundaka.net",
+  "port_external": 6022,
+  "bin": "/home/txurtxil/blender/blender",
+  "version": "4.2.23",
+  "required": true
+ },
+ "rpi5": {
+  "host": "rpi5",
+  "note": "acceso solo via z1 (LAN); OpenClaw :18789, tools :8100"
+ },
+ "legacy_removed": {
+  "vlm_z1_qwen25vl": "Qwen2.5-VL-7B archivado 2026-10-02 en z1:~/archive/ (sin proceso/arranque/consumidores; grep probado). Sustituido por Qwen3-VL-8B Q4_K_M en z1:8084.",
+  "vlm_30b_iq2m": "Qwen3-VL-30B-A3B IQ2_M archivado: degenerado en A/B (no sigue instrucciones). Q4_K_M no cabe en 16GB. Conservado en bc250:~/archive/",
+  "rpc_server_z1": "ggml-rpc-server de z1 detenido 2026-10-02: cero consumidores (coder bc250: -ngl 99, sin --rpc/-ts)."
+ }
+}
