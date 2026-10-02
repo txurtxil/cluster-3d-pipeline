@@ -41,3 +41,10 @@ popa del casco solo 20 mm (voladizo + popa hueca bajo z=-0.4, visible sobre la
 helice). Fix: transom calculado de la geometria real (2*half_breadth(0),
 de quilla-0.25 a cubierta+0.35).
 455 obj, 455/455 manifold. Renders verificados desde ambos angulos del usuario.
+
+## V3.4 — Extremos cerrados, escalera corregida, puente realista
+- Casco y cubierta: tapas de abanico integradas en proa/popa (bicolor por z) ->
+  desaparece la placa de transom y los huecos de los bordes abiertos del loft.
+- Escalera: largueros con rotacion -ang (antes 90-ang -> subia del reves) + pasamano.
+- Puente: ventanal envolvente frontal con 15 montantes, ventanas laterales,
+  radar de navegacion en techo. 462 obj, 462/462 manifold.

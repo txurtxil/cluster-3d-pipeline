@@ -102,17 +102,21 @@ def rail_run(name, x0, x1, y, z_base, m=M_WHITE):
         cyl(f"{name}_tubo_{int(zz*10)}", ((x0+x1)/2, y, zz), tube_r, span, m, rot=(0, math.radians(90), 0), verts=6)
 
 def stairs(name, x, y, z0, z1, width, m=M_METAL):
+    # V3.4: sube hacia +X con pendiente correcta (antes 90-ang -> "del reves")
     h = z1 - z0
     run = h * 0.85
     ang = math.atan2(h, run)
     length = math.hypot(h, run)
     for side in (-1, 1):
-        cyl(f"{name}_larg_{side}", (x + run/2, y + side*width/2, z0 + h/2), 0.3, length, m,
-            rot=(0, math.radians(90) - ang, 0), verts=6)
+        cube(f"{name}_larg_{side}", (x + run/2, y + side*width/2, z0 + h/2),
+             (length, 0.35, 0.35), m, rot=(0, -ang, 0))
     steps = max(3, int(h / 1.4))
     for i in range(steps):
         t = (i + 0.5) / steps
         cube(f"{name}_peld_{i}", (x + run*t, y, z0 + h*t), (1.6, width, 0.35), m)
+    # pasamano
+    cube(f"{name}_mano", (x + run/2, y + width/2, z0 + h/2 + 1.2),
+         (length, 0.18, 0.18), m, rot=(0, -ang, 0))
 
 # ================= CASCO (manga 40, mayor sheer de proa) =================
 def half_breadth(t):
@@ -196,6 +200,22 @@ def deck_loft():
         for j in range(NP):
             k = (j + 1) % NP
             Fs.append((a + j, a + k, a + NP + k, a + NP + j))
+    # V3.4: tapar proa y popa de la cubierta (mismo metodo de abanico)
+    for ring, dirx in ((0, -1), (P["n_stations"] - 1, +1)):
+        base = ring * NP
+        cy = sum(V[base+j][1] for j in range(NP)) / NP
+        cz = sum(V[base+j][2] for j in range(NP)) / NP
+        ci = len(V)
+        V.append((V[base][0], cy, cz))
+        for j in range(NP):
+            k = (j + 1) % NP
+            a, b = base + j, base + k
+            ax, ay, az = V[a][0]-V[ci][0], V[a][1]-V[ci][1], V[a][2]-V[ci][2]
+            bx, by, bz = V[b][0]-V[ci][0], V[b][1]-V[ci][1], V[b][2]-V[ci][2]
+            if ((ay*bz - az*by) > 0) == (dirx > 0):
+                Fs.append((ci, a, b))
+            else:
+                Fs.append((ci, b, a))
     me = bpy.data.meshes.new("Cubierta_m"); me.from_pydata(V, [], Fs); me.update()
     o = bpy.data.objects.new("Cubierta", me); sc.collection.objects.link(o)
     o.data.materials.append(M_DECK)
@@ -203,7 +223,8 @@ def deck_loft():
 deck_loft()
 # V3: bulbo integrado (mas dentro del casco, punta sobresale hacia proa)
 sph("Bulbo_proa", (L * 0.978, 0, -T * 0.40), (L * 0.021, B * 0.10, T * 0.42), M_BOOT)
-cube("Espejo_popa", (-0.4, 0, F * 0.35), (0.8, B * 0.99, F * 0.75), M_HULL)
+# V3.4: sin placa de transom aparte; popa y proa cerradas por las tapas del loft
+# (cap() en hull_band) y la cubierta tambien tapada -> cero huecos en extremos.
 cube("Quilla", (L * 0.45, 0, -T - 0.3), (L * 0.8, 1.6, 0.9), M_BOOT)
 # V2-5: quillas de rolido (bilge keels)
 for side in (-1, 1):
