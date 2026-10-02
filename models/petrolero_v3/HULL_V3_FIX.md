@@ -48,3 +48,10 @@ de quilla-0.25 a cubierta+0.35).
 - Escalera: largueros con rotacion -ang (antes 90-ang -> subia del reves) + pasamano.
 - Puente: ventanal envolvente frontal con 15 montantes, ventanas laterales,
   radar de navegacion en techo. 462 obj, 462/462 manifold.
+
+## V3.5 — Escalera con aterrizaje, popa cerrada, castillo detallado
+Escalera aterriza en techo de N1 con plataforma (antes su tramo superior quedaba
+en el aire delante del castillo). Popa: bulkhead de cubierta + bocinas apoyadas.
+Castillo: 24 ojos de buey, 4 balsas, cupula satelite, focos en alas, cornetas,
+catwalk con railing, ventanal del puente con 15 montantes + radar (bloque V3.4
+perdido en un reset del contenedor, reaplicado).

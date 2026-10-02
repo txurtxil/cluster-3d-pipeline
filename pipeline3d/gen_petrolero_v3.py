@@ -239,8 +239,12 @@ for k in range(P["prop_blades"]):
     bl = cube(f"Helice_pala_{k}", (-6.6, 0, -T * 0.5),
               (0.7, 7.2, P["propeller_thickness"]), M_METAL)
     bl.rotation_euler = (math.radians(22), 0, ang)
-cyl("Bocina_popa", (-1.2, B * 0.42, F * 0.55), 0.8, 1.6, M_METAL)
-cyl("Bocina_popa_b", (-1.2, -B * 0.42, F * 0.55), 0.8, 1.6, M_METAL)
+# V3.5: cerramiento de la cubierta de popa (bulkhead entre castillo y transom)
+# + bocinas apoyadas en el -> popa cerrada visualmente a nivel de cubierta
+cube("Poop_bulkhead", (3.2, 0, F + 1.75), (0.8, 2*half_breadth(0.02)+0.6, 2.8), M_HULL)
+for side in (-1, 1):
+    cyl(f"Bocina_popa_{side}", (3.2, side * B * 0.18, F + 3.6), 0.8, 1.6, M_METAL)
+    cyl(f"Bocina_sop_{side}", (3.2, side * B * 0.18, F + 2.9), 0.25, 1.2, M_METAL, verts=8)
 
 # ================= V2-1: DOMOS DE TANQUE (18) + manholes =================
 # 6 tanques x 3 hileras de domos: cubierta al ras, sin bodegas
@@ -330,6 +334,42 @@ N1 = cube("SS_N1", (ssx, 0, F + 6.5), (L * 0.155, B * 0.72, 13), M_WHITE)
 N2 = cube("SS_N2", (ssx + L*0.008, 0, F + 14.2), (L * 0.115, B * 0.64, 5.4), M_WHITE)
 DH = cube("SS_DH", (ssx + L*0.016, 0, F + 18.2), (L * 0.085, B * 0.56, 3.4), M_WHITE)
 PB = cube("Puente", (ssx + L*0.055, 0, F + 21.6), (L * 0.075, B * 0.88, 3.6), M_WHITE)
+# V3.5: puente realista -> ventanal frontal envolvente con montantes + laterales + radar
+_PB_X = ssx + L*0.055 + L*0.0375
+cube("Ventanal_frente", (_PB_X, 0, F + 21.9), (0.5, B * 0.84, 1.6), M_DARK)
+for k in range(15):
+    yy = -B*0.42 + k * (B * 0.84 / 14)
+    cube(f"Montante_{k}", (_PB_X + 0.12, yy, F + 21.9), (0.28, 0.22, 1.8), M_WHITE)
+for side in (-1, 1):
+    cube(f"Ventanal_lat_{side}", (ssx + L*0.055, side * B * 0.435, F + 21.9),
+         (L * 0.06, 0.4, 1.4), M_DARK)
+cyl("Radar_mastil", (ssx + L*0.055, 0, F + 25.4), 0.22, 2.4, M_METAL, verts=8)
+cyl("Radar_barra", (ssx + L*0.055, 0, F + 26.4), 0.16, 4.6, M_WHITE,
+    rot=(math.radians(90), 0, 0), verts=8)
+
+# ================= V3.5: DETALLE DE CASTILLO (petrolero real) =================
+for side in (-1, 1):
+    for r in range(2):
+        for k in range(6):
+            xx = ssx - L*0.055 + k * (L * 0.11 / 5)
+            cyl(f"Ojo_buey_{side}_{r}_{k}", (xx, side * B * 0.361, F + 4.5 + r * 4.0),
+                0.55, 0.5, M_DARK, rot=(math.radians(90), 0, 0), verts=10)
+for side in (-1, 1):
+    for k in range(2):
+        cyl(f"Balsa_{side}_{k}", (ssx - L*0.02 + k * 6.5, side * B * 0.325, F + 15.3),
+            0.9, 3.2, M_ORANGE, rot=(math.radians(90), 0, 0), verts=10)
+sph("Cupula_sat", (ssx + L*0.016, -B*0.15, F + 20.4), (1.3, 1.3, 1.1), M_WHITE)
+cyl("Cupula_base", (ssx + L*0.016, -B*0.15, F + 19.75), 0.9, 0.5, M_METAL, verts=10)
+for side in (-1, 1):
+    cyl(f"Foco_{side}", (ssx + L*0.085, side*B*0.465, F + 23.2), 0.45, 0.7, M_METAL, verts=8)
+    cyl(f"Foco_sop_{side}", (ssx + L*0.085, side*B*0.465, F + 22.6), 0.18, 0.8, M_METAL, verts=6)
+for sx in (-1, 1):
+    cyl(f"Corneta_{sx}", (ssx + L*0.008 + sx*2.2, 0, F + 17.45 + 14.6), 0.32, 1.4, M_METAL,
+        rot=(0, math.radians(75)*sx, 0), verts=8)
+# pasarela tecnica en techo de N1 con railing
+cube("Catwalk_N1", (ssx + L*0.065, 0, F + 13.1), (L*0.05, B*0.70, 0.35), M_METAL)
+rail_run("RailCat", ssx + L*0.042, ssx + L*0.088, B*0.33, F + 13.3, M_WHITE)
+rail_run("RailCat_b", ssx + L*0.042, ssx + L*0.088, -B*0.33, F + 13.3, M_WHITE)
 # alas de puente: cortas y con soporte diagonal (nada volado sin apoyo)
 for side in (-1, 1):
     cube(f"Ala_{side}", (ssx + L*0.085, side*B*0.465, F + 21.3), (L*0.03, B*0.07, 3.0), M_WHITE)
@@ -344,8 +384,10 @@ for zi, zw, ww in ((F + 21.5, 1.2, B*0.84), (F + 18.4, 1.0, B*0.52),
     xoff = 0.093 if zi > F + 20 else (0.058 if zi > F + 16 else (0.066 if zi > F + 12 else 0.083))
     cube("Ventanas", (ssx + L*xoff, 0, zi), (0.7, ww, zw), M_DARK)
 cube("Puerta_SS", (ssx + L*0.078, -B*0.2, F + 4.0), (0.8, 3.0, 5.0), M_DARK)
-# escalera exterior apoyada en la cara de proa de N1
-stairs("Escalera_SS", ssx + L*0.079, B * 0.26, F + 0.7, F + 13.0, 2.4, M_METAL)
+# V3.5: escalera que DESPEGA del castillo: aterriza sobre el techo de N1
+# (x 33.5 -> 44, dentro de la huella de N1 6.9..45.6), con plataforma de llegada
+stairs("Escalera_SS", 33.5, B * 0.26, F + 0.7, F + 13.0, 2.4, M_METAL)
+cube("Escalera_llegada", (42.5, B * 0.26, F + 13.1), (4.5, 3.0, 0.4), M_METAL)
 rail_run("RailSS", ssx - L*0.045, ssx + L*0.06, B*0.27, N2_TOP + 0.3, M_WHITE)
 rail_run("RailSS_b", ssx - L*0.045, ssx + L*0.06, -B*0.27, N2_TOP + 0.3, M_WHITE)
 
