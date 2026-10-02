@@ -1,0 +1,129 @@
+{
+ "coord": {
+  "hull_x_range": [
+   0.0,
+   250.0
+  ],
+  "hull_y_range": [
+   -20.0,
+   20.0
+  ],
+  "hull_z_range": [
+   -13.0,
+   0.0
+  ],
+  "note": "+X=proa si Bulbo x >> Helice x"
+ },
+ "orientation": {
+  "bulbo_x": 244.5,
+  "helice_x": -6.6,
+  "timon_x": -2.6,
+  "ancla_x": 238.75,
+  "puente_x": 45.0,
+  "PROA": "+X"
+ },
+ "bulb": {
+  "x": [
+   239.51,
+   249.49
+  ],
+  "y_half_width": 3.9,
+  "z": [
+   -10.66,
+   0.26
+  ],
+  "below_waterline": false,
+  "protrudes_past_bow": true,
+  "centered": true,
+  "size": [
+   9.98,
+   7.8,
+   10.92
+  ]
+ },
+ "symmetry_y": {
+  "Casco_obra_viva": 0.0,
+  "Casco_obra_muerta": 0.0
+ },
+ "normals": {
+  "Casco_obra_viva": {
+   "faces": 260,
+   "inward": 0,
+   "pct": 0.0
+  },
+  "Casco_obra_muerta": {
+   "faces": 260,
+   "inward": 0,
+   "pct": 0.0
+  }
+ },
+ "deck_overhang": {
+  "deck_half_width": 20.35,
+  "hull_max_half_width": 20.0,
+  "deck_x": [
+   0.0,
+   250.0
+  ],
+  "hull_x": [
+   0.0,
+   250.0
+  ],
+  "overhang_mm": 0.35
+ },
+ "transom": {
+  "width": 39.6,
+  "hull_stern_width": 40.0,
+  "wider_than_stern": false
+ },
+ "element_table": [
+  {
+   "elemento": "Bulbo_proa",
+   "esperado": "proa",
+   "actual": "proa",
+   "x": 244.5,
+   "estado": "PASS"
+  },
+  {
+   "elemento": "Ancla_mango",
+   "esperado": "proa",
+   "actual": "proa",
+   "x": 238.8,
+   "estado": "PASS"
+  },
+  {
+   "elemento": "Mastil_proa",
+   "esperado": "proa",
+   "actual": "proa",
+   "x": 226.2,
+   "estado": "PASS"
+  },
+  {
+   "elemento": "Timon",
+   "esperado": "popa",
+   "actual": "popa",
+   "x": -2.6,
+   "estado": "PASS"
+  },
+  {
+   "elemento": "Helice_buje",
+   "esperado": "popa",
+   "actual": "popa",
+   "x": -6.6,
+   "estado": "PASS"
+  },
+  {
+   "elemento": "Puente",
+   "esperado": "popa",
+   "actual": "popa",
+   "x": 45.0,
+   "estado": "PASS"
+  },
+  {
+   "elemento": "Chimenea_baja",
+   "esperado": "popa",
+   "actual": "popa",
+   "x": 12.5,
+   "estado": "PASS"
+  }
+ ]
+}
