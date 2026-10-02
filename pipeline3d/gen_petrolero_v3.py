@@ -130,28 +130,45 @@ def depth_k(t):
 def deck_z(t):
     return F + 0.075 * F * (max(0.0, t - 0.5) / 0.5) ** 2   # V2: sheer mas marcado
 
+def prof_y(fz, table):
+    """interpola fy en la tabla prof_rel para un fz arbitrario."""
+    if fz <= table[0][1]: return table[0][0]
+    for k in range(1, len(table)):
+        if fz <= table[k][1]:
+            (y0, z0), (y1, z1) = table[k-1], table[k]
+            return y0 + (y1 - y0) * (fz - z0) / max(z1 - z0, 1e-9)
+    return table[-1][0]
+
 def hull_band(z0f, z1f, m, name, inflate=0.0):
-    # V3 FIX (causa raiz V2): fracciones absolutas de la vertical local.
-    # wl = fraccion donde esta la LINEA DE FLOTACION (z=0) para ESTA estacion.
-    # banda roja:  g = fz*wl          (quilla -> flotacion)
-    # banda negra: g = wl + fz*(1-wl) (flotacion -> cubierta)
+    # V3.1 (fix seccion invertida + continuidad en flotacion):
+    # prof_rel describe la seccion COMPLETA de cubierta (fz=0, manga max) a
+    # quilla (fz=1, 0.6b); g = 1 - fz mapea a altura (g=1 cubierta, g=0 quilla).
+    # wl = g de la flotacion. La banda NEGRA toma fz in [0, 1-wl] (cubierta ->
+    # flotacion), la ROJA fz in [1-wl, 1] (flotacion -> quilla). Ambas comparten
+    # el punto de la flotacion -> casco continuo, manga decreciente hacia quilla.
     V, Fs = [], []
-    prof_rel = [(1.0, 0.0), (0.995, 0.16), (0.98, 0.38), (0.945, 0.62),
-                (0.885, 0.82), (0.78, 0.94), (0.60, 1.0)]   # V3: 7 pares, rizado redondo
-    NP = len(prof_rel) * 2
+    table = [(1.0, 0.0), (0.995, 0.16), (0.98, 0.38), (0.945, 0.62),
+             (0.885, 0.82), (0.78, 0.94), (0.60, 1.0)]
+    NS = 8                                  # muestras por banda
+    NP = NS * 2
     for i in range(P["n_stations"]):
         t = i / (P["n_stations"] - 1)
         x = t * L
         b = half_breadth(t) + inflate
         zlo, zhi = -depth_k(t), deck_z(t)
-        wl = (0.0 - zlo) / (zhi - zlo)     # <-- la correccion
+        wl = (0.0 - zlo) / (zhi - zlo)
+        fz_lo, fz_hi = (0.0, 1.0 - wl) if z1f == 1.0 else (1.0 - wl, 1.0)
         base = len(V)
-        for (fy, fz) in prof_rel:
-            g = fz * wl if z1f == 0.0 else wl + fz * (1.0 - wl)
-            V.append((x, fy * b, zlo + (zhi - zlo) * g))
-        for (fy, fz) in reversed(prof_rel):
-            g = fz * wl if z1f == 0.0 else wl + fz * (1.0 - wl)
-            V.append((x, -fy * b, zlo + (zhi - zlo) * g))
+        for s in range(NS):
+            fz = fz_lo + (fz_hi - fz_lo) * s / (NS - 1)
+            g = 1.0 - fz
+            y = prof_y(fz, table) * b
+            V.append((x, y, zlo + (zhi - zlo) * g))
+        for s in range(NS - 1, -1, -1):   # espejo en orden inverso: normal exterior
+            fz = fz_lo + (fz_hi - fz_lo) * s / (NS - 1)
+            g = 1.0 - fz
+            y = prof_y(fz, table) * b
+            V.append((x, -y, zlo + (zhi - zlo) * g))
     for i in range(P["n_stations"] - 1):
         a = i * NP
         for j in range(NP - 1):

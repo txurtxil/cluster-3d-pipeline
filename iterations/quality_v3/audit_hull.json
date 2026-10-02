@@ -5,8 +5,8 @@
    250.0
   ],
   "hull_y_range": [
-   -20.0,
-   20.0
+   -18.98,
+   18.98
   ],
   "hull_z_range": [
    -13.0,
@@ -47,19 +47,19 @@
  },
  "normals": {
   "Casco_obra_viva": {
-   "faces": 260,
-   "inward": 0,
-   "pct": 0.0
+   "faces": 300,
+   "inward": 300,
+   "pct": 100.0
   },
   "Casco_obra_muerta": {
-   "faces": 260,
-   "inward": 0,
-   "pct": 0.0
+   "faces": 300,
+   "inward": 300,
+   "pct": 100.0
   }
  },
  "deck_overhang": {
   "deck_half_width": 20.35,
-  "hull_max_half_width": 20.0,
+  "hull_max_half_width": 18.98,
   "deck_x": [
    0.0,
    250.0
@@ -68,12 +68,12 @@
    0.0,
    250.0
   ],
-  "overhang_mm": 0.35
+  "overhang_mm": 1.37
  },
  "transom": {
   "width": 39.6,
-  "hull_stern_width": 40.0,
-  "wider_than_stern": false
+  "hull_stern_width": 37.95,
+  "wider_than_stern": true
  },
  "element_table": [
   {
