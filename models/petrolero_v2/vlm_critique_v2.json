@@ -1,0 +1,22 @@
+{
+  "tanker_confidence": 0.95,
+  "bulk_carrier_confidence": 0.02,
+  "general_cargo_confidence": 0.03,
+  "top5_visual_problems": [
+    "Missing cargo holds or hatches typical of bulk carriers",
+    "Lack of visible cargo loading/unloading equipment",
+    "No visible superstructure or crane for general cargo",
+    "Unrealistic number and arrangement of tanks",
+    "Missing propeller and rudder details"
+  ],
+  "top5_missing_features": [
+    "Cargo holds or bays for bulk materials",
+    "Crane or loading equipment",
+    "Cargo securing systems",
+    "Deck machinery for general cargo",
+    "Hatches or access points for bulk cargo"
+  ],
+  "top5_to_improve": [
+    "Add realistic cargo tanks or bulk compartments",
+    "Include visible loading/unloading equipment",
+    "Add superstructure details for

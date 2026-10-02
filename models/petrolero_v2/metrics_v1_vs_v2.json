@@ -1,0 +1,55 @@
+{
+ "silhouette_iou": 0.8138,
+ "dice": 0.8974,
+ "contour_error_px": 8.53,
+ "bbox_width_err": 0.0,
+ "bbox_height_err": 0.0,
+ "center_axis_error": 0.0125,
+ "zones": {
+  "zone_1": {
+   "iou": 0.9055,
+   "width_ref": 204,
+   "width_render": 208,
+   "width_err": 0.0196
+  },
+  "zone_2": {
+   "iou": 0.7503,
+   "width_ref": 292,
+   "width_render": 334,
+   "width_err": 0.1438
+  },
+  "zone_3": {
+   "iou": 0.7945,
+   "width_ref": 333,
+   "width_render": 375,
+   "width_err": 0.1261
+  },
+  "zone_4": {
+   "iou": 0.8381,
+   "width_ref": 322,
+   "width_render": 322,
+   "width_err": 0.0
+  },
+  "zone_5": {
+   "iou": 0.8324,
+   "width_ref": 181,
+   "width_render": 164,
+   "width_err": 0.0939
+  }
+ },
+ "openings": {
+  "count_ref": 2,
+  "count_render": 2,
+  "area_ref": 0.7921,
+  "area_render": 0.7547,
+  "area_delta_pct": -4.7
+ },
+ "convergence_thresholds": {
+  "iou_min": 0.92,
+  "contour_px_max": 6.0,
+  "bbox_err_max": 0.06,
+  "axis_err_max": 0.03,
+  "zone_width_err_max": 0.1,
+  "opening_area_delta_max": 15.0
+ }
+}
