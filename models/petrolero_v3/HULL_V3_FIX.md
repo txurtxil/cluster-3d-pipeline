@@ -30,3 +30,14 @@ Fix: N1/N2/deckhouse/puente con retranqueos progresivos; alas con soporte
 diagonal; cubierta superior a huella de N2; botes sobre boat-deck (techo N2)
 en y=+-B*0.24; bocinas en y=+-B*0.24 (casco popa); escalera apoyada en cara
 de proa de N1. 455 obj, 455/455 manifold.
+
+## V3.3 — Chimenea asentada + transom a medida (reporte usuario, 2 fotos)
+Foto 1: chimenea volando -> la reescritura V3.2 movio el puente pero la chimenea
+quedo en x=ssx-0.055L (popa del puente, 8.5 mm sobre N1). Fix: chimenea sobre
+el techo de N2 (eje N2, base F+17.45); mastil de popa reubicado al techo del
+puente (su x quedo dentro de la chimenea nueva).
+Foto 2: placa gigante en popa -> Espejo_popa media 39.6 mm pero la seccion de
+popa del casco solo 20 mm (voladizo + popa hueca bajo z=-0.4, visible sobre la
+helice). Fix: transom calculado de la geometria real (2*half_breadth(0),
+de quilla-0.25 a cubierta+0.35).
+455 obj, 455/455 manifold. Renders verificados desde ambos angulos del usuario.

@@ -328,15 +328,18 @@ stairs("Escalera_SS", ssx + L*0.079, B * 0.26, F + 0.7, F + 13.0, 2.4, M_METAL)
 rail_run("RailSS", ssx - L*0.045, ssx + L*0.06, B*0.27, N2_TOP + 0.3, M_WHITE)
 rail_run("RailSS_b", ssx - L*0.045, ssx + L*0.06, -B*0.27, N2_TOP + 0.3, M_WHITE)
 
-# ================= CHIMENEA =================
-fx = ssx - L * 0.055
-cyl("Chimenea_baja", (fx, 0, F + 26), 3.6, 9, M_FUNNEL, verts=20)
-cyl("Chimenea_alta", (fx, 0, F + 32), 2.9, 5, M_FUNNEL, verts=20)
-cyl("Chimenea_banda", (fx, 0, F + 29.5), 3.7, 2.0, M_HULL, verts=20)
-cyl("Chimenea_sombrero", (fx, 0, F + 35.2), 3.4, 1.0, M_HULL, verts=20)
+# ================= CHIMENEA (V3.3: APOYADA sobre cubierta de N2, no volando) =================
+# Causa V3.2: fx = ssx-0.055L quedaba popa del puente (hueco de 8.5 mm sobre N1).
+# Fix: base sobre el techo de N2 (SS_cubierta_sup, z=F+17.45) y x centrada en N2.
+fx = ssx + L * 0.008            # eje de N2
+FUN_BASE = F + 17.45
+cyl("Chimenea_baja", (fx, 0, FUN_BASE + 4.5), 3.6, 9, M_FUNNEL, verts=20)
+cyl("Chimenea_alta", (fx, 0, FUN_BASE + 10.5), 2.9, 5, M_FUNNEL, verts=20)
+cyl("Chimenea_banda", (fx, 0, FUN_BASE + 8.0), 3.7, 2.0, M_HULL, verts=20)
+cyl("Chimenea_plataforma", (fx, 0, FUN_BASE + 9.3), 4.4, 0.5, M_METAL, verts=20)
+cyl("Chimenea_sombrero", (fx, 0, FUN_BASE + 13.7), 3.4, 1.0, M_HULL, verts=20)
 for sx in (-1, 1):
-    cyl(f"Escape_{sx}", (fx + sx * 1.2, 0, F + 36.5), 0.8, 2.4, M_METAL, verts=10)
-cyl("Chimenea_plataforma", (fx, 0, F + 30.8), 4.4, 0.5, M_METAL, verts=20)
+    cyl(f"Escape_{sx}", (fx + sx * 1.2, 0, FUN_BASE + 15.0), 0.8, 2.4, M_METAL, verts=10)
 
 # ================= MÁSTILES =================
 cyl("Mastil_proa", (L * 0.905, 0, F + 9), 0.8, 18, M_RUST, verts=12)
@@ -345,8 +348,11 @@ cyl("Barra_radar_proa", (L * 0.905, 0, F + 17.5), 0.3, 8.0, M_WHITE, rot=(math.r
 for sx in (-1, 1):
     cyl(f"Antena_proa_{sx}", (L * 0.905 + sx * 1.2, 0, F + 21), 0.12, 6, M_METAL, verts=6)
 sph("Luz_proa", (L * 0.905, 0, F + 18.6), (0.5, 0.5, 0.5), M_ORANGE)
-cyl("Mastil_popa", (fx + 2, 0, F + 39), 0.35, 8, M_METAL, verts=8)
-cyl("Antena_popa", (fx + 2, 0, F + 43.5), 0.1, 3.5, M_METAL, verts=6)
+# V3.3: mastil de popa sobre el techo del puente (la chimenea ocupa su x antiguo)
+_mastx = ssx + L * 0.085
+_PB_TOP = F + 21.6 + 1.8
+cyl("Mastil_popa", (_mastx, 0, _PB_TOP + 4.0), 0.35, 8, M_METAL, verts=8)
+cyl("Antena_popa", (_mastx, 0, _PB_TOP + 8.7), 0.1, 3.5, M_METAL, verts=6)
 
 # ================= BOTES SALVAVIDAS (V3.2: sobre cubierta de botes = techo de N2) =================
 _lb = P["lifeboat_scale"]
