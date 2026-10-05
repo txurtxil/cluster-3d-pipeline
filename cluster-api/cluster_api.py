@@ -6,6 +6,7 @@
 import json, os, re, subprocess, time, hashlib, pathlib
 from fastapi import FastAPI, Header, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 BASE = pathlib.Path.home() / "cluster-api"
 CFG_DIR = BASE / "config"
@@ -19,7 +20,18 @@ ZPY = "/home/txurtxil/.venv-recon/bin/python"
 CFG_DIR.mkdir(parents=True, exist_ok=True)
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
-app = FastAPI(title="cluster-api", version="0.1.0")
+app = FastAPI(title="cluster-api", version="0.3.0")
+# La app Android (Nexus) sirve la pagina desde 127.0.0.1:<puerto> y llama aqui:
+# sin CORS el navegador bloquea la respuesta (leccion 2026-10-05: verificar
+# desde navegador/webview, no solo curl). Uso personal en LAN -> allow all.
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"],
+                   allow_headers=["*"], allow_credentials=False)
+
+
+@app.get("/")
+def root():
+    return {"servicio": "cluster-api TXURTXIL", "docs": "/docs",
+            "herramienta_movil": "Nexus -> Crear pieza"}
 
 
 def sh(cmd, timeout=30):
@@ -38,7 +50,12 @@ def cfg():
 
 
 def require_key(x_api_key: str | None):
-    want = cfg().get("auth", {}).get("api_key", "")
+    auth = cfg().get("auth", {})
+    if auth.get("lan_trust"):
+        # uso personal en LAN: la key es opcional si auth.lan_trust: true en
+        # services.json (config unica). El puerto 8200 no esta expuesto fuera.
+        return
+    want = auth.get("api_key", "")
     if not x_api_key or x_api_key != want:
         raise HTTPException(401, "api-key invalida o ausente (header X-Api-Key)")
 
