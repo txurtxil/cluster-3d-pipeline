@@ -50,3 +50,14 @@ Base: https://github.com/txurtxil/Nexus (adaptar/simplificar/unir, no reescribir
 Decision: PWA instalable (sin Play Store) con envoltura TWA opcional; Tasker+HTTP como
 arranque cero-dev. Notificaciones: Telegram (bot ya operativo) o Web Push.
 Visor: GLB (`wm.gltf_export`) + `<model-viewer>`; fallback Fast STL Viewer.
+
+
+## Endpoints VLM (FASE 2-A, verificados 2026-10-05)
+
+| Endpoint | Descripcion |
+|---|---|
+| `GET /vlm/status` | VLM UP/DOWN + modelo cargado vs esperado (services.json). |
+| `POST /vlm/ask` | `{image_b64, prompt}` -> wake bajo demanda (~40s si DOWN) + respuesta Qwen3-VL-8B. El movil nunca habla con z1:8084 directo (escucha en 127.0.0.1 y es secuencial con Blender). |
+
+Verificacion: status OK (modelo correcto), ask con imagen sintetica (descripcion exacta),
+wake-on-demand de punta a punta (VLM parado -> ask -> woken:true -> respuesta correcta en 43s).

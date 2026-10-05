@@ -203,3 +203,68 @@ async def reference(photo: UploadFile, x_api_key: str | None = Header(default=No
         raise HTTPException(502, "scp json->rpi5 fallo: " + r.stderr[-200:])
     return {"photo": local.name, "geometry": json.load(open(str(local) + ".geometry.json")),
             "stored": [str(local), str(local) + ".geometry.json"]}
+
+
+# --- VLM proxy (FASE 2): el VLM de z1 escucha en 127.0.0.1:8084 y es secuencial
+# respecto a Blender (bajo demanda). El movil NO le habla directo: pasa por aqui.
+VLM_URL = "http://127.0.0.1:8084"
+
+
+def vlm_models():
+    r = sh(f"ssh -o BatchMode=yes {Z1} 'curl -s -m6 {VLM_URL}/v1/models'", 20)
+    if r.returncode != 0 or '"id"' not in r.stdout:
+        return None
+    try:
+        return json.loads(r.stdout)["data"][0]["id"]
+    except Exception:
+        return None
+
+
+def vlm_wake(timeout_s=240):
+    if vlm_models():
+        return False
+    sh(f"ssh -o BatchMode=yes {Z1} 'bash ~/start_vlm_z1.sh'", 30)
+    t0 = time.time()
+    while time.time() - t0 < timeout_s:
+        time.sleep(5)
+        if vlm_models():
+            return True
+    raise HTTPException(504, "VLM no arranco en %ds (start_vlm_z1.sh)" % timeout_s)
+
+
+@app.get("/vlm/status")
+def vlm_status(x_api_key: str | None = Header(default=None)):
+    require_key(x_api_key)
+    m = vlm_models()
+    return {"running": m is not None, "model": m,
+            "expected": cfg().get("vlm", {}).get("model")}
+
+
+@app.post("/vlm/ask")
+def vlm_ask(body: dict, x_api_key: str | None = Header(default=None)):
+    require_key(x_api_key)
+    b64 = str(body.get("image_b64", ""))
+    prompt = str(body.get("prompt", "Describe la pieza renderizada: forma, color y detalles. Una frase."))[:2000]
+    if len(b64) < 100 or not b64.startswith("/9j") and "base64," not in b64[:30] and not b64[:1].isalnum():
+        raise HTTPException(400, "image_b64 invalido")
+    if len(b64) > 25_000_000:
+        raise HTTPException(413, "imagen demasiado grande (>~18MB b64)")
+    woken = vlm_wake()
+    model = vlm_models()
+    payload = {"model": model, "temperature": 0.2, "max_tokens": 300, "messages": [
+        {"role": "user", "content": [
+            {"type": "text", "text": prompt},
+            {"type": "image_url", "image_url": {"url": "data:image/png;base64," + b64}}]}]}
+    pf = BASE / "uploads" / ("vlm_payload_%d.json" % time.time())
+    pf.write_text(json.dumps(payload))
+    zf = f"/tmp/{pf.name}"
+    r = sh(f"scp -q -o BatchMode=yes {pf} {Z1}:{zf} && ssh -o BatchMode=yes {Z1} "
+           f"\"curl -s -m300 {VLM_URL}/v1/chat/completions -H 'Content-Type: application/json' -d @{zf}; rm -f {zf}\"", 360)
+    pf.unlink(missing_ok=True)
+    if r.returncode != 0 or '"choices"' not in r.stdout:
+        raise HTTPException(502, "VLM no respondio: " + (r.stderr or r.stdout)[-300:])
+    try:
+        ans = json.loads(r.stdout)["choices"][0]["message"]["content"]
+    except Exception:
+        raise HTTPException(502, "respuesta VLM inparseable: " + r.stdout[-200:])
+    return {"answer": ans, "model": model, "vlm_woken": woken}
