@@ -128,7 +128,18 @@ def mission(body: dict, x_api_key: str | None = Header(default=None)):
     if not re.fullmatch(r"gen_[A-Za-z0-9_]+\.py", gen):
         raise HTTPException(400, "gen invalido (debe ser gen_*.py en ~/pipeline3d)")
     genp = PIPE / gen
-    if not genp.is_file():
+    gen_code = body.get("gen_code")
+    if gen_code:
+        # FASE 2-C: el Coder del cluster escribe el generador; lo materializamos
+        # en disco (whitelist gen_*.py ya validada) con chequeo de sintaxis previo.
+        if genp.exists():
+            raise HTTPException(409, f"generador ya existe en disco: {gen}")
+        genp.write_text(str(gen_code)[:200000])
+        chk = sh(f"python3 -m py_compile {genp}", 30)
+        if chk.returncode != 0:
+            genp.unlink()
+            raise HTTPException(400, "gen_code no compila: " + chk.stderr[-300:])
+    elif not genp.is_file():
         raise HTTPException(404, f"generador no encontrado: {gen}")
     d = RUNS / name
     if d.exists():
@@ -251,10 +262,13 @@ def vlm_ask(body: dict, x_api_key: str | None = Header(default=None)):
         raise HTTPException(413, "imagen demasiado grande (>~18MB b64)")
     woken = vlm_wake()
     model = vlm_models()
+    mime = str(body.get("mime", "image/png"))
+    if "/" not in mime or len(mime) > 30:
+        mime = "image/png"
     payload = {"model": model, "temperature": 0.2, "max_tokens": 300, "messages": [
         {"role": "user", "content": [
             {"type": "text", "text": prompt},
-            {"type": "image_url", "image_url": {"url": "data:image/png;base64," + b64}}]}]}
+            {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}]}]}
     pf = BASE / "uploads" / ("vlm_payload_%d.json" % time.time())
     pf.write_text(json.dumps(payload))
     zf = f"/tmp/{pf.name}"
@@ -268,3 +282,31 @@ def vlm_ask(body: dict, x_api_key: str | None = Header(default=None)):
     except Exception:
         raise HTTPException(502, "respuesta VLM inparseable: " + r.stdout[-200:])
     return {"answer": ans, "model": model, "vlm_woken": woken}
+
+
+@app.post("/coder/ask")
+def coder_ask(body: dict, x_api_key: str | None = Header(default=None)):
+    require_key(x_api_key)
+    system = str(body.get("system", ""))[:4000]
+    prompt = str(body.get("prompt", ""))[:16000]
+    if not prompt:
+        raise HTTPException(400, "prompt vacio")
+    c = cfg().get("coder", {})
+    url = f"http://{c.get('host', '192.168.10.23')}:{c.get('port', 8081)}/v1/chat/completions"
+    payload = {"model": c.get("model"), "temperature": 0.2, "messages": [
+        {"role": "system", "content": system}, {"role": "user", "content": prompt}]}
+    if body.get("json_mode"):
+        payload["response_format"] = {"type": "json_object"}
+    pf = BASE / "uploads" / ("coder_payload_%d.json" % time.time())
+    pf.write_text(json.dumps(payload))
+    # el llama-server del coder exige --api-key = la MISMA api-key del cluster
+    ckey = cfg().get("auth", {}).get("api_key", "")
+    r = sh(f"curl -s -m180 {url} -H 'Content-Type: application/json' "
+           f"-H 'Authorization: Bearer {ckey}' -d @{pf}; rm -f {pf}", 200)
+    if r.returncode != 0 or '"choices"' not in r.stdout:
+        raise HTTPException(502, "coder no respondio: " + (r.stderr or r.stdout)[-300:])
+    try:
+        ans = json.loads(r.stdout)["choices"][0]["message"]["content"]
+    except Exception:
+        raise HTTPException(502, "respuesta coder inparseable: " + r.stdout[-200:])
+    return {"answer": ans, "model": c.get("model")}
