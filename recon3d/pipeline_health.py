@@ -54,8 +54,22 @@ def ssh_cmd(host, port, cmd, tmo=25):
     return out.decode(errors="replace").strip()
 
 
-Z = ("mundaka.net", cfg.get("blender", "port_external"))
-B = ("mundaka.net", cfg.get("coder", "port_external"))
+# Resolucion de destino segun ubicacion (fix 2026-10-05): dentro de la LAN
+# los nombres locales (z1/bc250) resuelven y ssh es puerto 22 directo; fuera,
+# se conserva EXACTAMENTE el comportamiento probado (host_external/port_external).
+def _lan():
+    # Firma de estar DENTRO de la LAN: el coder (bc250:8081) responde por IP
+    # interna de cfg. Fuera, el NAT no reenvia ese puerto y falla en segundos.
+    try:
+        tcp(cfg.get("coder", "host"), cfg.get("coder", "port"), 3)
+        return True
+    except OSError:
+        return False
+
+
+LAN = _lan()
+Z = ("z1", 22) if LAN else ("mundaka.net", cfg.get("blender", "port_external"))
+B = (cfg.get("coder", "host"), 22) if LAN else ("mundaka.net", cfg.get("coder", "port_external"))
 
 check("SSH_Z1", True, lambda: (tcp(*Z), ("OK", "z1:%d" % Z[1]))[1])
 check("SSH_BC250", True, lambda: (tcp(*B), ("OK", "bc250:%d" % B[1]))[1])
@@ -63,8 +77,14 @@ check("CONFIG", True, lambda: ("OK", "services.json viva, %d servicios" % len(cf
 
 
 def coder_check():
-    m = http_models("http://mundaka.net:%d" % cfg.get("coder", "port_external"))
-    return ("OK", m) if m else ("FAIL", "sin modelo")
+    # Unificado 2026-10-05: el API del coder (llama-server 8081) solo escucha en
+    # LAN; el NAT externo 8022 es SSH. Se entra por SSH (B) y se curl a localhost,
+    # igual que el chequeo VLM. Funciona dentro y fuera de la LAN.
+    out = ssh_cmd(*B, "curl -s -m8 http://127.0.0.1:8081/v1/models 2>/dev/null", tmo=20)
+    d = json.loads(out or "{}")
+    if d.get("data"):
+        return "OK", d["data"][0]["id"]
+    return "FAIL", "bc250:8081 sin modelo"
 
 
 check("CODER", True, coder_check)
