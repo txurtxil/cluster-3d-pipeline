@@ -35,7 +35,9 @@ def log(msg):
         f.write(line + "\n")
 
 
-def llm(system, user, n_predict=500):
+def llm(system, user, n_predict=1600):
+    # OJO (leccion 9-oct): Qwen3 es modelo de razonamiento; los tokens de
+    # thinking consumen n_predict. Con 500 -> finish=length, content vacio.
     req = urllib.request.Request(API, data=json.dumps({
         "messages": [{"role": "system", "content": system},
                      {"role": "user", "content": user}],
