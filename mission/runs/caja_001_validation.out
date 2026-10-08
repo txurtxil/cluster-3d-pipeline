@@ -1,0 +1,9 @@
+[23:40:00] PLAN: parametros inyectados (test) {'L': 100, 'W': 70, 'H': 30, 'WALL': 1.6, 'RIM_R': 1.5, 'HOLE_D': 3.2, 'HOLE_MARGIN': 12, 'USBC_W': 9, 'USBC_H': 3.5, 'USBC_Z': 8}
+[23:40:00] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[23:40:00] ITER 1 medidas: dims={'L': 100.0, 'W': 70.0, 'H': 30.0} wall_min=1.6 manifold=True
+[23:40:00] ITER 1 FALLOS: {"WALL": {"got": 1.6, "want": 2.0, "tol": 0.15}}
+[23:40:15] ITER 1 cambios: {"WALL": 2.0} razon: La pared medida es 1.6 mm y la restricción exige 2.0 ±0.15 mm; se ajusta WALL a 2.0 manteniendo RIM_R < WALL.
+[23:40:15] ITER 2: construyendo y midiendo...
+[23:40:16] ITER 2 medidas: dims={'L': 100.0, 'W': 70.0, 'H': 30.0} wall_min=2.0 manifold=True
+[23:40:16] ITER 2: todas las HARD constraints pasan
+[23:40:16] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_001_validation/REPORT.md

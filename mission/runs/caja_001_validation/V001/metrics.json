@@ -1,0 +1,25 @@
+{
+  "dims": {
+    "L": 100.0,
+    "W": 70.0,
+    "H": 30.0
+  },
+  "walls": {
+    "-X": 1.6,
+    "+X": 1.6,
+    "-Y": 1.6,
+    "+Y": 1.6
+  },
+  "wall_min": 1.6,
+  "wall_max": 1.6,
+  "manifold": {
+    "ok": true,
+    "bad_edges": 0,
+    "components": 1
+  },
+  "NOT_MEASURED": [
+    "holes_count",
+    "usbc_dims",
+    "normals_orientation"
+  ]
+}
