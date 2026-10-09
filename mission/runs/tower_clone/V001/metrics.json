@@ -1,0 +1,18 @@
+{
+  "dims": {
+    "H": 300.0,
+    "BASE": 122.008
+  },
+  "counts": {
+    "PARTS": 315,
+    "UNIQ": 34
+  },
+  "manifold": {
+    "ok": false,
+    "bad_edges": 116
+  },
+  "NOT_MEASURED": [
+    "internal_fit",
+    "feature_positions"
+  ]
+}

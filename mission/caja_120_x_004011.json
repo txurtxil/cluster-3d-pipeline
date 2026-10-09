@@ -1,0 +1,1 @@
+{"mission_id": "caja_120_x_004011", "brief": "Caja 120 x 80 x 40 mm, pared 3, 4 agujeros M3, USB-C lateral, esquinas redondeadas", "hard": {"L": {"value": 120.0, "tol": 0.2}, "W": {"value": 80.0, "tol": 0.2}, "H": {"value": 40.0, "tol": 0.2}, "WALL": {"value": 3.0, "tol": 0.15}}, "max_iters": 6, "tag": "api-8201"}

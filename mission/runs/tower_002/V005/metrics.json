@@ -1,0 +1,33 @@
+{
+  "dims": {
+    "H": 300.0,
+    "BASE": 175.941
+  },
+  "counts": {
+    "LEGS": 4,
+    "PADS": 4,
+    "PLATFORMS": 3,
+    "BARS": 96,
+    "RINGS": 20,
+    "ARCHES": 4,
+    "CROWN": 1,
+    "SPIRE": 1,
+    "SPRINGS": 2,
+    "RAILS": 16,
+    "RAILPOSTS": 76,
+    "CORNICES": 16
+  },
+  "manifold": {
+    "ok": false,
+    "bad_edges": 80,
+    "worst_object": "ARCH0",
+    "components": 284
+  },
+  "NOT_MEASURED": [
+    "footprint_incl_pads",
+    "lattice_spacing",
+    "leg_wall",
+    "arch_opening_dims",
+    "zone_density_2d"
+  ]
+}

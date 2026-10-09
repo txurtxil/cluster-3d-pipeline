@@ -1,0 +1,7 @@
+Blender 4.2.23 LTS (hash d0cbe84903e8 built 2026-07-21 01:31:03)
+Timer 'STL Export' took 5.48 ms
+Info: Total files 0 | Changed 0 | Failed 0
+Info: Saved "t.blend"
+GEN_OK {"params": {"H": 300.0, "BASE": 183.0, "TOP": 10.0, "LEVELS": 2, "N_BAYS": 6, "ARCH_SPRING": 2.0, "CAP": true, "PAD": true, "RAILING": true}, "counts": {"LEGS": 4, "PADS": 4, "PLATFORMS": 2, "CROWN": 1, "SPIRE": 1, "SPRINGS": 2, "ARCHES": 4, "BARS": 96, "RINGS": 16, "RAILS": 12, "RAILPOSTS": 88, "CORNICES": 12}, "z_shift": 1.914, "mesh_bad_edges": 80}
+
+Blender quit

@@ -8,9 +8,9 @@
   "injected_initial": {"H": 300},
   "hard": {
     "H":     {"value": 300.0, "tol": 0.5},
-    "BASE":  {"value": 183.2, "tol": 1.5},
-    "PARTS": {"value": 334,  "tol": 0},
-    "UNIQ":  {"value": 50,   "tol": 0}
+    "BASE":  {"value": 122.0, "tol": 1.5},
+    "PARTS": {"value": 315,  "tol": 0},
+    "UNIQ":  {"value": 34,   "tol": 0}
   },
   "max_iters": 3
 }

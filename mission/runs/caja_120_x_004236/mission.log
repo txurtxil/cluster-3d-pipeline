@@ -1,0 +1,5 @@
+[00:43:23] PLAN: {'L': 120.0, 'W': 80.0, 'H': 40.0, 'WALL': 3.0, 'RIM_R': 2.0, 'HOLE_D': 3.4, 'HOLE_MARGIN': 6.0, 'USBC_W': 10.0, 'USBC_H': 3.5, 'USBC_Z': 15.0}
+[00:43:23] ITER 1: construyendo y midiendo...
+[00:43:24] ITER 1 medidas: dims={'L': 120.0, 'W': 80.0, 'H': 40.0} wall_min=3.0 manifold=True
+[00:43:24] ITER 1: todas las HARD constraints pasan
+[00:43:24] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_120_x_004236/REPORT.md

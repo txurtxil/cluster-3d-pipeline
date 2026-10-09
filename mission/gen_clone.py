@@ -27,14 +27,42 @@ for m in kit["meshes"]:
     me.update()
     bm.append(me)
 
-# 2) instancias con su transformada de colocacion original
+# 2) seleccion de la estructura principal (el .blend contiene piezas
+# sueltas: una torre pequena y un ornamento). Criterio: conservar las piezas
+# cuyo centroide 2D esta cerca del eje de la pieza MAS ALTA (la aguja de la
+# torre principal). Radio = 0.35 x altura del modelo (~medio ancho torre).
+import math as _m
+cents3 = []
+for mi, mat in kit["instances"]:
+    c = kit["meshes"][mi]["center"]
+    v = Matrix(mat) @ __import__("mathutils").Vector((c[0], c[1], c[2]))
+    cents3.append(v)
+zs_all = [v.z for v in cents3]
+span_z = max(zs_all) - min(zs_all)
+i_top = max(range(len(cents3)), key=lambda i: cents3[i].z)
+R = 0.35 * span_z
+keep = {i for i, v in enumerate(cents3)
+        if _m.hypot(v.x - cents3[i_top].x, v.y - cents3[i_top].y) <= R}
+
 for i, (mi, mat) in enumerate(kit["instances"]):
+    if i not in keep:
+        continue
     ob = bpy.data.objects.new(f"PART{i:03d}", bm[mi])
     sc.collection.objects.link(ob)
     ob.matrix_world = Matrix(mat)
+n_kept = len(keep)
 
 # 3) normalizar: centrado xy, suelo en 0, altura EXACTA H (escala uniforme)
-bb = kit["bbox"]
+#    bbox SOLO del cluster principal (medido de los objetos creados)
+zs_k, xs_k, ys_k = [], [], []
+for o in sc.objects:
+    if o.type != "MESH":
+        continue
+    for c in o.bound_box:
+        w = o.matrix_world @ __import__("mathutils").Vector(c)
+        xs_k.append(w.x); ys_k.append(w.y); zs_k.append(w.z)
+bb = {"x": [min(xs_k), max(xs_k)], "y": [min(ys_k), max(ys_k)],
+      "z": [min(zs_k), max(zs_k)]}
 span = bb["z"][1] - bb["z"][0]
 S = H / span
 cx = (bb["x"][0] + bb["x"][1]) / 2.0
@@ -59,8 +87,9 @@ bpy.ops.wm.stl_export(filepath=OUT_STL)
 bpy.ops.wm.save_as_mainfile(filepath=OUT_BLEND)
 
 base_pred = (bb["x"][1] - bb["x"][0]) * S
+uniq_kept = len({kit["instances"][i][0] for i in keep})
 print("GEN_OK", json.dumps({
     "params": {"H": H, "S": round(S, 5)},
-    "counts": {"PARTS": kit["n_instances"], "UNIQ": kit["n_unique"]},
+    "counts": {"PARTS": n_kept, "UNIQ": uniq_kept},
     "base_predicha": round(base_pred, 2),
 }))

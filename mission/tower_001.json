@@ -1,0 +1,15 @@
+{
+  "mission_id": "tower_001",
+  "tag": "STRESS TEST torre (spec §29). Caveat metrologia: bbox por vertices, discrepancia eval <0.5mm en estudio",
+  "brief": "Torre tipo Eiffel: altura 300 mm, base 120x120 mm, 3 plataformas, arcos en la base, celosia X en las 4 caras",
+  "generator": "gen_tower.py",
+  "measurer": "measure_tower.py",
+  "hard": {
+    "H":         {"value": 300.0, "tol": 1.0},
+    "BASE":      {"value": 120.0, "tol": 1.0},
+    "LEGS":      {"value": 4,     "tol": 0},
+    "PLATFORMS": {"value": 3,     "tol": 0},
+    "BARS":      {"value": 72,    "tol": 0}
+  },
+  "max_iters": 6
+}

@@ -1,0 +1,5 @@
+[15:50:53] PLAN: parametros inyectados (test) {'H': 300}
+[15:50:53] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[15:50:54] ITER 1 medidas: dims={'H': 300.0, 'BASE': 122.008} wall_min=N/A manifold=False
+[15:50:54] ITER 1: todas las HARD constraints pasan
+[15:50:54] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/tower_clone/REPORT.md

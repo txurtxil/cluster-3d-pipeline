@@ -1,0 +1,23 @@
+{
+  "H": 300.0,
+  "BASE": 181.5,
+  "PROFILE": "eiffel",
+  "N_BAYS": 2,
+  "LEG_R": 8.0,
+  "BAR_R": 1.2,
+  "RING_R": 1.5,
+  "ARCH_SPRING": 2,
+  "ARCH_TUBE": 2.5,
+  "PAD": true,
+  "PAD_SIZE": 25.0,
+  "PAD_T": 3.0,
+  "CAP": true,
+  "SPIRE_R": 1.0,
+  "PLATFORM_T": 2.0,
+  "OVERHANG": 10.0,
+  "RAILING": true,
+  "RAIL_H": 12.0,
+  "RAIL_R": 0.8,
+  "POST_SPACING": 15.0,
+  "CORNICE_T": 1.2
+}

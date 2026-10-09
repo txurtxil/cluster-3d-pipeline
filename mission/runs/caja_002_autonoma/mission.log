@@ -1,0 +1,5 @@
+[00:07:39] PLAN: {'L': 100.0, 'W': 70.0, 'H': 30.0, 'WALL': 2.0, 'RIM_R': 1.5, 'HOLE_D': 3.4, 'HOLE_MARGIN': 8.0, 'USBC_W': 10.0, 'USBC_H': 4.0, 'USBC_Z': 15.0}
+[00:07:39] ITER 1: construyendo y midiendo...
+[00:07:39] ITER 1 medidas: dims={'L': 100.0, 'W': 70.0, 'H': 30.0} wall_min=2.0 manifold=True
+[00:07:39] ITER 1: todas las HARD constraints pasan
+[00:07:39] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_002_autonoma/REPORT.md

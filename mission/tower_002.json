@@ -1,0 +1,24 @@
+{
+  "mission_id": "tower_002",
+  "tag": "Replica torre Eiffel de referencia (barandillas, cornisas, arcos, chapitel)",
+  "brief": "Torre Eiffel identica a la referencia: altura 300 mm, base 150x150 mm, patas gruesas curvas con zapatas, 4 arcos redondeados, celosia X densa con anillos, 3 plataformas con barandilla y cornisa, corona y chapitel con anillos",
+  "generator": "gen_tower.py",
+  "measurer": "measure_tower.py",
+  "params_hint": "H,BASE,PROFILE,N_BAYS,LEG_R,BAR_R,RING_R,ARCH_SPRING,ARCH_TUBE,PAD,PAD_SIZE,PAD_T,CAP,SPIRE_R,PLATFORM_T,OVERHANG,RAILING,RAIL_H,RAIL_R,POST_SPACING,CORNICE_T",
+  "hard": {
+    "H":         {"value": 300.0, "tol": 1.0},
+    "BASE":      {"value": 181.5, "tol": 2.0},
+    "LEGS":      {"value": 4,   "tol": 0},
+    "PADS":      {"value": 4,   "tol": 0},
+    "PLATFORMS": {"value": 2,  "tol": 0},
+    "CROWN":     {"value": 1,  "tol": 0},
+    "SPIRE":     {"value": 1,  "tol": 0},
+    "SPRINGS":   {"value": 2,  "tol": 0},
+    "ARCHES":    {"value": 4,  "tol": 0},
+    "BARS":      {"value": 96, "tol": 0},
+    "RINGS":     {"value": 16, "tol": 0},
+    "RAILS":     {"value": 12,  "tol": 0},
+    "CORNICES":  {"value": 12,  "tol": 0}
+  },
+  "max_iters": 8
+}

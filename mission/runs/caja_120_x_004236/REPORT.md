@@ -1,0 +1,83 @@
+# REPORT
+
+MISSION: caja_120_x_004236 api-8201
+INPUT: Caja 120 x 80 x 40 mm, pared 3, 4 agujeros M3, USB-C lateral, esquinas redondeadas
+
+## HARD CONSTRAINTS
+{
+ "L": {
+  "value": 120.0,
+  "tol": 0.2
+ },
+ "W": {
+  "value": 80.0,
+  "tol": 0.2
+ },
+ "H": {
+  "value": 40.0,
+  "tol": 0.2
+ },
+ "WALL": {
+  "value": 3.0,
+  "tol": 0.15
+ }
+}
+
+## FINAL PARAMETERS
+{
+ "L": 120.0,
+ "W": 80.0,
+ "H": 40.0,
+ "WALL": 3.0,
+ "RIM_R": 2.0,
+ "HOLE_D": 3.4,
+ "HOLE_MARGIN": 6.0,
+ "USBC_W": 10.0,
+ "USBC_H": 3.5,
+ "USBC_Z": 15.0
+}
+
+## METRICS (ultima version medida)
+{
+ "dims": {
+  "L": 120.0,
+  "W": 80.0,
+  "H": 40.0
+ },
+ "walls": {
+  "-X": 3.0,
+  "+X": 3.0,
+  "-Y": 3.0,
+  "+Y": 3.0
+ },
+ "wall_min": 3.0,
+ "wall_max": 3.0,
+ "manifold": {
+  "ok": true,
+  "bad_edges": 0,
+  "components": 1
+ },
+ "NOT_MEASURED": [
+  "holes_count",
+  "usbc_dims",
+  "normals_orientation"
+ ]
+}
+
+## ITERATIONS
+total: 1
+## ROLLBACKS
+v0.1: sin rollback multi-version (una version por iteracion, nunca se sobrescribe)
+
+## UNKNOWN / NOT_MEASURED
+["holes_count", "usbc_dims", "normals_orientation"]
+
+## WARNINGS
+ninguna
+
+## PRINTABILITY
+manifold: {'ok': True, 'bad_edges': 0, 'components': 1}
+STL exportado y hash SHA256 registrado por version
+
+VERDICT: PASS
+REASON: convergencia
