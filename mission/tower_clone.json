@@ -1,0 +1,16 @@
+{
+  "mission_id": "tower_clone",
+  "tag": "Ruta B: clon fiel por instanciado del kit de 50 piezas del Eiffel_Resin_09.blend",
+  "brief": "Clonar la torre de referencia: altura 300 mm (escala x3.75 del original de 80.12 mm), con sus 334 piezas instanciadas y sus 50 piezas unicas",
+  "generator": "gen_clone.py",
+  "measurer": "measure_clone.py",
+  "params_hint": "H (altura objetivo en mm; el resto lo fija el kit extraido del modelo de referencia)",
+  "injected_initial": {"H": 300},
+  "hard": {
+    "H":     {"value": 300.0, "tol": 0.5},
+    "BASE":  {"value": 183.2, "tol": 1.5},
+    "PARTS": {"value": 334,  "tol": 0},
+    "UNIQ":  {"value": 50,   "tol": 0}
+  },
+  "max_iters": 3
+}

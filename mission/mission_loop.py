@@ -13,10 +13,10 @@ ROOT = Path.home() / "cluster-3d-pipeline" / "mission"
 BLENDER = str(Path.home() / "blender" / "blender")
 KEY = (ROOT / ".apikey").read_text().strip()
 API = "http://192.168.10.45:8082/v1/chat/completions"
-GEN = ROOT / "gen_box.py"
-MEASURE = ROOT / "measure_box.py"
 
 cfg = json.load(open(sys.argv[1]))
+GEN = ROOT / cfg.get("generator", "gen_box.py")
+MEASURE = ROOT / cfg.get("measurer", "measure_box.py")
 MID = cfg["mission_id"]
 MBRIEF = cfg["brief"]
 HARD = cfg["hard"]              # {"L": {"value":100.0,"tol":0.2}, ...}
@@ -42,6 +42,10 @@ def llm(system, user, n_predict=1600):
         "messages": [{"role": "system", "content": system},
                      {"role": "user", "content": user}],
         "temperature": 0.0, "n_predict": n_predict,
+        # PLAN/DIAGNOSE = JSON determinista: sin thinking. Leccion 9-oct:
+        # con thinking activo, en carga compartida de GPU el modelo quemaba
+        # TODO el presupuesto en razonamiento y devolvia content VACIO.
+        "chat_template_kwargs": {"enable_thinking": False},
     }).encode(), headers={"Content-Type": "application/json",
                           "Authorization": f"Bearer {KEY}"})
     with urllib.request.urlopen(req, timeout=300) as r:
@@ -49,8 +53,23 @@ def llm(system, user, n_predict=1600):
 
 
 def extract_json(txt):
+    # 1) bloque ```json ...``` (el modelo de razonamiento suele anidar llaves
+    #    sueltas en el thinking; el fence es la senal mas fiable)
+    import re
+    m = re.search(r"```(?:json)?\s*(\{.*?\})\s*```", txt, re.S)
+    if m:
+        try:
+            return json.loads(m.group(1))
+        except Exception:
+            pass
+    # 2) fallback: primera '{' a ultima '}'
     i, j = txt.rfind("}"), txt.find("{")
-    return json.loads(txt[j:i + 1]) if 0 <= j < i else None
+    if 0 <= j < i:
+        try:
+            return json.loads(txt[j:i + 1])
+        except Exception:
+            return None
+    return None
 
 
 def sha256(p):
@@ -86,13 +105,21 @@ def build(params, vdir):
 def evaluate(m):
     fails = {}
     d = m["dims"]
+    counts = m.get("counts", {})
     for name, spec in HARD.items():
-        got = d.get(name) if name in d else m.get("wall_min")
+        got = d.get(name)
+        if got is None:
+            got = m.get("wall_min")
+        if got is None:
+            got = counts.get(name)
         if got is None:
             fails[name] = "UNKNOWN"
         elif abs(got - spec["value"]) > spec["tol"]:
             fails[name] = {"got": got, "want": spec["value"], "tol": spec["tol"]}
-    if not m["manifold"]["ok"]:
+    # manifold solo es HARD si la mision lo pide: las celosias/arcos abiertos
+    # de una torre tienen aristas frontera legitimas (leccion tower v2:
+    # 80 bad_edges = 4 arcos x 2 extremos x 10 lados, INTENCIONADO)
+    if cfg.get("require_manifold") and not m["manifold"]["ok"]:
         fails["manifold"] = m["manifold"]
     return fails
 
@@ -104,16 +131,19 @@ if INJECTED:
 else:
     sys_p = ("Eres el planificador de un agente 3D. Respondes SOLO con un JSON "
              "con los parametros iniciales. Sin texto fuera del JSON.")
-    usr_p = (f"Mision: {MBRIEF}\nRestricciones duras (mm): "
+    usr_p = (f"Mision: {MBRIEF}\nRestricciones duras: "
              + json.dumps(HARD)
-             + "\nParametros posibles: L,W,H,WALL,RIM_R,HOLE_D,HOLE_MARGIN,"
-               "USBC_W,USBC_H,USBC_Z. RIM_R debe ser < WALL.\n"
-               "Devuelve: {\"params\": {...}}")
+             + f"\nParametros posibles del generador: {cfg.get('params_hint', 'L,W,H,WALL,RIM_R,HOLE_D,HOLE_MARGIN,USBC_W,USBC_H,USBC_Z')}\n"
+               'Devuelve SOLO un bloque ```json con {"params": {...}} '
+               "y nada fuera de el.")
     pj = None
-    for _ in range(3):
-        pj = extract_json(llm(sys_p, usr_p))
+    for attempt in range(4):
+        raw = llm(sys_p, usr_p)
+        pj = extract_json(raw)
         if pj and "params" in pj:
             break
+        log(f"PLAN intento {attempt + 1}: parse fallido, raw[:300]={raw[:300]!r}")
+        pj = None
     if not pj:
         log("VERDICT=NEEDS_HUMAN_REVIEW razon=PLAN_NO_PARSE")
         sys.exit(2)
@@ -127,8 +157,8 @@ for it in range(1, MAX_ITERS + 1):
     tag = " [INYECCION TEST]" if (it == 1 and INJECTED) else ""
     log(f"ITER {it}{tag}: construyendo y midiendo...")
     m = build(params, vdir)
-    log(f"ITER {it} medidas: dims={m['dims']} wall_min={m['wall_min']} "
-        f"manifold={m['manifold']['ok']}")
+    log(f"ITER {it} medidas: dims={m['dims']} "
+        f"wall_min={m.get('wall_min', 'N/A')} manifold={m['manifold']['ok']}")
     fails = evaluate(m)
     if not fails:
         converged = True
