@@ -141,9 +141,13 @@ def hull_band(z0f, z1f, m, name, inflate=0.0):
         zlo, zhi = -depth_k(t), deck_z(t)
         base = len(V)
         for (fy, fz) in prof_rel:
-            V.append((x, fy * b, zlo + (zhi - zlo) * (z0f + (z1f - z0f) * fz)))
+            frac = z0f + (z1f - z0f) * fz
+            zz = frac * zhi if frac >= 0 else -frac * zlo
+            V.append((x, fy * b, zz))
         for (fy, fz) in reversed(prof_rel):
-            V.append((x, -fy * b, zlo + (zhi - zlo) * (z0f + (z1f - z0f) * fz)))
+            frac = z0f + (z1f - z0f) * fz
+            zz = frac * zhi if frac >= 0 else -frac * zlo
+            V.append((x, -fy * b, zz))
     for i in range(P["n_stations"] - 1):
         a = i * NP
         for j in range(NP - 1):
