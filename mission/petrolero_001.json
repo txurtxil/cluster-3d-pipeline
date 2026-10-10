@@ -1,0 +1,16 @@
+{
+  "mission_id": "petrolero_001",
+  "tag": "Petrolero VLCC 1:1000, L=250mm, del gen_petrolero_stress adaptado",
+  "brief": "Petrolero: eslora 250 mm, manga 42 mm, con casco real, 7 tanques, piping, botes salvavidas, helice y timon",
+  "generator": "gen_tanker.py",
+  "measurer": "measure_tanker.py",
+  "params_hint": "L (eslora mm; B=0.168L, T=0.072L, F=0.052L derivan), tanks (6-7), detail, scale, wake, paint",
+  "injected_initial": {"L": 250},
+  "hard": {
+    "L":     {"value": 260.915, "tol": 0.5},
+    "B":     {"value": 42.84,   "tol": 0.5},
+    "H":     {"value": 109.672, "tol": 0.5},
+    "PARTS": {"value": 361,     "tol": 0}
+  },
+  "max_iters": 3
+}
