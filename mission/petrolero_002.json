@@ -1,0 +1,50 @@
+{
+  "mission_id": "petrolero_002",
+  "tag": "Petrolero V3 en mission-loop (gen_petrolero_v3 adaptado, unidad reproducida 2026-10-10)",
+  "generator": "gen_petrolero_v3.py",
+  "brief": "Petrolero escala L=250: casco obra viva/muerta, quilla, bulbo, 7 tanques, piping, superestructura por gradines, 8 ojos de buey, gruas, botes, chimenea, transom, helice. Metricas nauticas HARD.",
+  "hard": {
+    "L": {
+      "value": 260.387,
+      "tol": 0.5
+    },
+    "B": {
+      "value": 40.7,
+      "tol": 0.5
+    },
+    "H": {
+      "value": 66.6,
+      "tol": 0.5
+    },
+    "PARTS": {
+      "value": 533,
+      "tol": 0
+    },
+    "draft": {
+      "value": 13.75,
+      "tol": 0.5
+    },
+    "freeboard": {
+      "value": 18.65,
+      "tol": 0.5
+    },
+    "hull_volume_mm3": {
+      "value": 98975.8,
+      "tol": 2500
+    },
+    "displacement_kg": {
+      "value": 0.101,
+      "tol": 0.005
+    }
+  },
+  "manifold": {
+    "require_manifold": false,
+    "max_bad_edges": 140
+  },
+  "max_iters": 6,
+  "params_hint": "L,B,T,F,min_printable_mm,scale",
+  "measurer": "measure_tanker.py",
+  "injected_initial": {
+    "L": 250
+  }
+}
