@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path.home() / "cluster-3d-pipeline" / "mission"
 BLENDER = str(Path.home() / "blender" / "blender")
 KEY = (ROOT / ".apikey").read_text().strip()
-API = "http://192.168.10.45:8082/v1/chat/completions"
+API = "http://127.0.0.1:8081/v1/chat/completions"
 
 cfg = json.load(open(sys.argv[1]))
 GEN = ROOT / cfg.get("generator", "gen_box.py")
