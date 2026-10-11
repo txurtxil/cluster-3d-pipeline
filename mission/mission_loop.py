@@ -115,6 +115,8 @@ def evaluate(m):
         if got is None:
             got = m.get('nautical', {}).get(name)
         if got is None:
+            got = m.get(name)
+        if got is None:
             fails[name] = "UNKNOWN"
         elif abs(got - spec["value"]) > spec["tol"]:
             fails[name] = {"got": got, "want": spec["value"], "tol": spec["tol"]}
