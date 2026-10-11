@@ -1,0 +1,5 @@
+[17:02:03] PLAN: parametros inyectados (test) {'L': 120.0, 'W': 80.0, 'H': 40.0, 'WALL': 3.0}
+[17:02:03] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[17:02:05] ITER 1 medidas: dims={'L': 120.0, 'W': 80.0, 'H': 40.0} wall_min=3.0 manifold=True
+[17:02:05] ITER 1: todas las HARD constraints pasan
+[17:02:05] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_120_x_170202/REPORT.md

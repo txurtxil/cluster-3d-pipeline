@@ -1,0 +1,5 @@
+[13:48:43] PLAN: parametros inyectados (test) {'L': 250, 'n_stations': 81, 'NS': 32}
+[13:48:43] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[13:49:08] ITER 1 medidas: dims={'L': 260.387, 'B': 40.7, 'H': 74.8} wall_min=N/A manifold=False
+[13:49:08] ITER 1: todas las HARD constraints pasan
+[13:49:08] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/petrolero_002/REPORT.md

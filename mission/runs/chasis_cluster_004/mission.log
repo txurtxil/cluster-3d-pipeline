@@ -1,0 +1,5 @@
+[15:04:14] PLAN: parametros inyectados (test) {'env_len': 305, 'env_w': 140}
+[15:04:14] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[15:04:15] ITER 1 medidas: dims={'X': 510.5, 'Y': 308.0, 'Z': 193.2} wall_min=N/A manifold=True
+[15:04:15] ITER 1: todas las HARD constraints pasan
+[15:04:15] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/chasis_cluster_004/REPORT.md

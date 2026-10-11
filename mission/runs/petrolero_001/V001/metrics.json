@@ -1,0 +1,24 @@
+{
+  "dims": {
+    "L": 260.915,
+    "B": 42.84,
+    "H": 78.0
+  },
+  "counts": {
+    "PARTS": 361,
+    "UNIQ": 361
+  },
+  "manifold": {
+    "ok": false,
+    "bad_edges": 116
+  },
+  "nautical": {
+    "draft": 13.75,
+    "freeboard": 19.0,
+    "hull_volume_mm3": 110905.9,
+    "displacement_kg": 0.114,
+    "displacement_m3": 0.000114,
+    "displacement_t": 0.0001,
+    "method": "rings(Casco_obra_viva,z<=0.5mm)+closed-submerged-solids; open bow/stern caps excluded"
+  }
+}

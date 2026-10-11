@@ -1,0 +1,13 @@
+[16:05:54] PLAN: parametros inyectados (test) {'env_len': 341.5, 'env_w': 144.3, 'psu_len': 150, 'psu_w': 81.5, 'psu_h': 40.5}
+[16:05:54] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[16:05:56] ITER 1 medidas: dims={'X': 565.25, 'Y': 316.6, 'Z': 192.5} wall_min=N/A manifold=True
+[16:05:56] ITER 1 FALLOS: {"X": {"got": 565.25, "want": 547.0, "tol": 3.0}, "Y": {"got": 316.6, "want": 310.0, "tol": 2.0}}
+[16:05:58] ITER 1 cambios: {"env_len": 335.0, "env_w": 140.0} razon: Se reducen env_len y env_w para cumplir con X y Y, manteniendo RIM_R < WALL y respetando tolerancias. El ajuste corrige exceso en X (565.25 → 547.0) y Y (316.6 → 310.0), priorizando el cumplimiento de restricciones sin alterar PARTS ni supports_spacing_mm.
+[16:05:58] ITER 2: construyendo y midiendo...
+[16:06:00] ITER 2 medidas: dims={'X': 555.5, 'Y': 308.0, 'Z': 192.5} wall_min=N/A manifold=True
+[16:06:00] ITER 2 FALLOS: {"X": {"got": 555.5, "want": 547.0, "tol": 3.0}}
+[16:06:02] ITER 2 cambios: {"env_len": 330.0} razon: El valor de X (555.5) excede el límite permitido (547.0 ± 3.0). Reducir env_len de 335.0 a 330.0 ajusta el tamaño total en X para cumplir con la restricción, manteniendo RIM_R < WALL y respetando todas las demás condiciones.
+[16:06:02] ITER 3: construyendo y midiendo...
+[16:06:03] ITER 3 medidas: dims={'X': 548.0, 'Y': 308.0, 'Z': 192.5} wall_min=N/A manifold=True
+[16:06:03] ITER 3: todas las HARD constraints pasan
+[16:06:03] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/chasis_cluster_006/REPORT.md

@@ -1,0 +1,5 @@
+[16:28:22] PLAN: {'L': 120.0, 'W': 80.0, 'H': 40.0, 'WALL': 3.0}
+[16:28:22] ITER 1: construyendo y midiendo...
+[16:28:23] ITER 1 medidas: dims={'L': 120.0, 'W': 80.0, 'H': 40.0} wall_min=3.0 manifold=True
+[16:28:23] ITER 1: todas las HARD constraints pasan
+[16:28:23] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_120_x_162741/REPORT.md

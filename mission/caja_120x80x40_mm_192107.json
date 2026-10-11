@@ -1,0 +1,1 @@
+{"mission_id": "caja_120x80x40_mm_192107", "brief": "Caja 120x80x40 mm, pared 3 mm", "hard": {"L": {"value": 120.0, "tol": 0.2}, "W": {"value": 80.0, "tol": 0.2}, "H": {"value": 40.0, "tol": 0.2}, "WALL": {"value": 3.0, "tol": 0.15}}, "max_iters": 6, "tag": "api-8201", "injected_initial": {"L": 120.0, "W": 80.0, "H": 40.0, "WALL": 3.0}}

@@ -29,11 +29,11 @@ INPUT: Caja 100x70x30 mm, pared 2 mm, 4 agujeros M3, USB-C lateral, esquinas red
  "W": 70.0,
  "H": 30.0,
  "WALL": 2.0,
- "RIM_R": 1.5,
- "HOLE_D": 3.4,
- "HOLE_MARGIN": 8.0,
- "USBC_W": 10.0,
- "USBC_H": 4.0,
+ "RIM_R": 3.0,
+ "HOLE_D": 3.0,
+ "HOLE_MARGIN": 5.0,
+ "USBC_W": 6.0,
+ "USBC_H": 2.0,
  "USBC_Z": 15.0
 }
 

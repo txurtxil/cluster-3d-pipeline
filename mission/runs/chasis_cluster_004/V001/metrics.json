@@ -1,0 +1,17 @@
+{
+  "dims": {
+    "X": 510.5,
+    "Y": 308.0,
+    "Z": 193.2
+  },
+  "counts": {
+    "PARTS": 35,
+    "UNIQ": 35,
+    "supports": 8
+  },
+  "supports_spacing_mm": 95.0,
+  "manifold": {
+    "ok": true,
+    "bad_edges": 0
+  }
+}

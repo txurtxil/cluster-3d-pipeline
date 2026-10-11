@@ -1,0 +1,5 @@
+[13:57:14] PLAN: {'L': 100.0, 'W': 70.0, 'H': 30.0, 'WALL': 2.0, 'RIM_R': 1.0, 'HOLE_D': 3.2, 'HOLE_MARGIN': 5.0, 'USBC_W': 9.2, 'USBC_H': 3.4, 'USBC_Z': 15.0}
+[13:57:14] ITER 1: construyendo y midiendo...
+[13:57:15] ITER 1 medidas: dims={'L': 100.0, 'W': 70.0, 'H': 30.0} wall_min=2.0 manifold=True
+[13:57:15] ITER 1: todas las HARD constraints pasan
+[13:57:15] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/migracion_test/REPORT.md
