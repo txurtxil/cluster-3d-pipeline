@@ -1,6 +1,6 @@
 {
   "mission_id": "petrolero_002",
-  "tag": "Petrolero EPICO v1: resolucion 4x (81 est/NS=32) + mastil radar, bocinas, luz, anclas. 2026-10-11",
+  "tag": "Petrolero EPICO v2: 4x res + mastil/anclas + tapas proa-popa + barandilla popa + auto-snap (0 flotantes). 2026-10-11",
   "generator": "gen_petrolero_v3.py",
   "brief": "Petrolero escala L=250: casco obra viva/muerta, quilla, bulbo, 7 tanques, piping, superestructura por gradines, 8 ojos de buey, gruas, botes, chimenea, transom, helice. Metricas nauticas HARD.",
   "hard": {
@@ -17,7 +17,7 @@
       "tol": 0.5
     },
     "PARTS": {
-      "value": 542,
+      "value": 551,
       "tol": 0
     },
     "draft": {

@@ -125,13 +125,29 @@ displacement = round(hull_volume * 1.025e-9, 4)
 
 tanks = sum(1 for o in objs if o.name.startswith("Limite_tanque")) // 2
 
+bbs = []
+for o in objs:
+    ev2, me2 = world_mesh(o)
+    ws2 = [ev2.matrix_world @ v.co for v in me2.vertices]
+    ev2.to_mesh_clear()
+    bbs.append((min(w.x for w in ws2)-0.5, min(w.y for w in ws2)-0.5, min(w.z for w in ws2)-0.5,
+                max(w.x for w in ws2)+0.5, max(w.y for w in ws2)+0.5, max(w.z for w in ws2)+0.5))
+floating = 0
+for i, a in enumerate(bbs):
+    touch = False
+    for j, b in enumerate(bbs):
+        if i == j: continue
+        if a[0] < b[3] and a[3] > b[0] and a[1] < b[4] and a[4] > b[1] and a[2] < b[5] and a[5] > b[2]:
+            touch = True; break
+    if not touch: floating += 1
 print("MEASURE_JSON " + json.dumps({
     "dims": {"L": round(max(xs) - min(xs), 3), "B": round(max(ys) - min(ys), 3),
              "H": round(max(zs) - min(zs), 3)},
     "counts": {"PARTS": len(objs), "UNIQ": len(uniq)},
     "tanks": tanks,
     "manifold": {"ok": bad == 0, "bad_edges": bad},
-    "nautical": {
+    "floating": floating,
+        "nautical": {
         "draft": draft,
         "freeboard": freeboard,
         "hull_volume_mm3": round(hull_volume, 1),

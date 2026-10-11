@@ -475,15 +475,100 @@ try:
         cyl("Epic_MastilRadar", (fx, fy, fz + 4.5), 0.5, 9.0, M_METAL)
         tor("Epic_RadarAnillo", (fx, fy, fz + 9.0), 2.2, 0.35, M_WHITE)
         sph("Epic_LuzMastil", (fx, fy, fz + 9.8), (0.6, 0.6, 0.6), M_WHITE)
-        cyl("Epic_BocinaA", (fx + 1.5, fy, fz + 2.5), 0.4, 1.6, M_METAL, rot=(0, math.radians(70), 0))
-        cyl("Epic_BocinaB", (fx - 1.5, fy, fz + 2.5), 0.4, 1.6, M_METAL, rot=(0, math.radians(-70), 0))
+        fw = [f.matrix_world @ v.co for v in f.data.vertices if abs((f.matrix_world @ v.co).z - (fz - 3)) < 2.0]
+        frad = max(((w.x - fx) ** 2 + (w.y - fy) ** 2) ** 0.5 for w in fw) if fw else 3.0
+        cyl("Epic_BocinaA", (fx + frad + 0.2, fy, fz + 2.5), 0.4, 1.6, M_METAL, rot=(0, math.radians(70), 0))
+        cyl("Epic_BocinaB", (fx - frad - 0.2, fy, fz + 2.5), 0.4, 1.6, M_METAL, rot=(0, math.radians(-70), 0))
+    xa = 0.90 * P["L"]
+    hb = None
+    for bn in ("Casco_obra_viva", "Casco_obra_muerta"):
+        o = bpy.data.objects.get(bn)
+        if not o: continue
+        for v in o.data.vertices:
+            w = o.matrix_world @ v.co
+            if abs(w.x - xa) < 2.5 and -8.0 <= w.z <= 4.0:
+                ay = abs(w.y)
+                if hb is None or ay > hb: hb = ay
+    if hb is None: hb = 8.0
+    ya = hb - 0.4
     for sgn in (1, -1):
         tag = "B" if sgn > 0 else "E"
-        cyl(f"Epic_Ancla_{tag}", (118, 8.5 * sgn, 0), 0.8, 12, M_METAL)
-        cube(f"Epic_AnclaFluke_{tag}", (118, 8.5 * sgn, -4.5), (3.2, 1.0, 2.6), M_METAL)
+        cyl(f"Epic_Ancla_{tag}", (xa, ya * sgn, -1), 0.8, 12, M_METAL)
+        cube(f"Epic_AnclaFluke_{tag}", (xa, ya * sgn, -6.0), (3.4, 1.2, 2.8), M_METAL)
+    print("EPIC3 anclas: x=", round(xa,1), " y=+/-", round(ya,1), " (media manga:", round(hb,1), ")")
     print("EPIC_OK: mastil radar, bocinas, luz, 2 anclas")
 except Exception as e:
     print("EPIC_FAIL", e)
+
+
+# === EPIC2: tapas de extremos + barandilla de popa ===
+try:
+    import math as _m
+    def _cap(x_end):
+        rings = []
+        for bn in ("Casco_obra_viva", "Casco_obra_muerta"):
+            o = bpy.data.objects.get(bn)
+            if not o: continue
+            pts = {}
+            for v in o.data.vertices:
+                key = round(v.co.x, 3)
+                if abs(key - x_end) < 0.01:
+                    pts.setdefault(key, []).append(v.co)
+            for key, lst in pts.items():
+                rings.append([(v.y, v.z) for v in lst])
+        if len(rings) != 2: return 0
+        loop = rings[0] + rings[1]
+        if len(loop) < 6: return 0
+        cy = sum(pp[0] for pp in loop)/len(loop); cz = sum(pp[1] for pp in loop)/len(loop)
+        loop.sort(key=lambda pp: _m.atan2(pp[1]-cz, pp[0]-cy))
+        n = len(loop)
+        vs = [(x_end, cy, cz)] + [(x_end, pp[0], pp[1]) for pp in loop]
+        fs = [(0, i+1, (i+1) % n + 1) for i in range(n)]
+        me = bpy.data.meshes.new("cap"); me.from_pydata(vs, [], fs); me.materials.append(M_HULL)
+        ob = bpy.data.objects.new("Epic2_Tapa_" + ("proa" if x_end > 0 else "popa"), me)
+        bpy.context.scene.collection.objects.link(ob)
+        return 1
+    xs = []
+    for bn in ("Casco_obra_viva", "Casco_obra_muerta"):
+        o = bpy.data.objects.get(bn)
+        if o: xs += [round(v.co.x, 3) for v in o.data.vertices]
+    caps = _cap(max(xs)) + _cap(min(xs))
+    for i, yy in enumerate((-8, -4, 0, 4, 8)):
+        cyl("Epic2_PostePopa_" + str(i), (4, yy, 21.4), 0.35, 3.0, M_METAL)
+    for zz in (22.6, 21.2):
+        cyl("Epic2_RielPopa_" + str(int(zz*10)), (4, 0, zz), 0.3, 18.0, M_METAL, rot=(_m.radians(90), 0, 0))
+    # AUTO-SNAP: acoplar piezas flotantes al vecino mas cercano (gap < 3mm)
+    import mathutils as _mu
+    def _bb(o):
+        dgx = bpy.context.evaluated_depsgraph_get()
+        ev = o.evaluated_get(dgx); me = ev.to_mesh()
+        ws = [ev.matrix_world @ v.co for v in me.vertices]
+        ev.to_mesh_clear()
+        return (min(w.x for w in ws), min(w.y for w in ws), min(w.z for w in ws),
+                max(w.x for w in ws), max(w.y for w in ws), max(w.z for w in ws))
+    meshes = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+    boxes = [(o, _bb(o)) for o in meshes]
+    snapped = []
+    for i, (oa, a) in enumerate(boxes):
+        best = None
+        for j, (ob, b) in enumerate(boxes):
+            if i == j: continue
+            gap = max(a[0]-b[3], b[0]-a[3], a[1]-b[4], b[1]-a[4], a[2]-b[5], b[2]-a[5])
+            if best is None or gap < best[0]: best = (gap, ob, b)
+        if best and best[0] > 0.05 and best[0] < 3.0 and oa.name != "Casco_obra_viva" and not oa.name.startswith("Casco_obra"):
+            g, ob, b = best
+            dx = dy = dz = 0.0
+            if   a[0] > b[3]: dx = -(g - 0.05)
+            elif b[0] > a[3]: dx =  (g - 0.05)
+            elif a[1] > b[4]: dy = -(g - 0.05)
+            elif b[1] > a[4]: dy =  (g - 0.05)
+            elif a[2] > b[5]: dz = -(g - 0.05)
+            elif b[2] > a[5]: dz =  (g - 0.05)
+            oa.location.x += dx; oa.location.y += dy; oa.location.z += dz
+            snapped.append((oa.name, round(g,2)))
+    print("EPIC2_OK tapas:", caps, "snapped:", snapped)
+except Exception as e:
+    print("EPIC2_FAIL", e)
 
 def audit():
     small, empty = [], []
