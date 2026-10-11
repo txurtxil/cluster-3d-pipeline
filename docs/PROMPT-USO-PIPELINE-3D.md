@@ -94,3 +94,9 @@ bc250-1:
   tail -f ~/cluster-3d-pipeline/mission/runs/<id>/mission.log
   ~/venvs/metrology/bin/python ~/cluster-3d-pipeline/metrology/test_metrology.py → METROLOGY_PASS
 rpi5: curl -s http://127.0.0.1:8201/health  → {"bc250-1":["UP","LOOP_OK"]}
+## 9. EMERGENCIA MEMORIA
+- La placa tiene 14 GB unificados; el cerebro (30B-A3B IQ3_XXS, 12.9 GB)
+  deja ~2 GB. SI se bloquea por memoria: tras reboot, UN comando: stopO
+  (/usr/local/sbin/stopO: para+deshabilita llama-node1). Volver: startO.
+- Config sana del servicio: -c 16384 (16k ctx). Maximo probado: 32768.
+  49152 NO cabe (fallo radv "Failed to allocate a buffer" en bucle).
