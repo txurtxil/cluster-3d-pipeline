@@ -464,6 +464,27 @@ stairs("Escalera_popa", L * 0.055, -B * 0.30, F + 0.7, F + 8.0, 2.4, M_METAL)
 cube("Plataforma_tecnica", (L * 0.245, 0, F + 5.6), (7, B * 0.5, 0.6), M_METAL)
 
 # ================= AUDIT =================
+
+# === EPIC: detalles de lujo v1 (posiciones derivadas de la escena) ===
+try:
+    funnels = [o for o in bpy.context.scene.objects if o.name.startswith("Chimenea")]
+    if funnels:
+        f = max(funnels, key=lambda o: max((o.matrix_world @ v.co).z for v in o.data.vertices))
+        fx, fy = f.location.x, f.location.y
+        fz = max((f.matrix_world @ v.co).z for v in f.data.vertices)
+        cyl("Epic_MastilRadar", (fx, fy, fz + 4.5), 0.5, 9.0, M_METAL)
+        tor("Epic_RadarAnillo", (fx, fy, fz + 9.0), 2.2, 0.35, M_WHITE)
+        sph("Epic_LuzMastil", (fx, fy, fz + 9.8), (0.6, 0.6, 0.6), M_WHITE)
+        cyl("Epic_BocinaA", (fx + 1.5, fy, fz + 2.5), 0.4, 1.6, M_METAL, rot=(0, math.radians(70), 0))
+        cyl("Epic_BocinaB", (fx - 1.5, fy, fz + 2.5), 0.4, 1.6, M_METAL, rot=(0, math.radians(-70), 0))
+    for sgn in (1, -1):
+        tag = "B" if sgn > 0 else "E"
+        cyl(f"Epic_Ancla_{tag}", (118, 8.5 * sgn, 0), 0.8, 12, M_METAL)
+        cube(f"Epic_AnclaFluke_{tag}", (118, 8.5 * sgn, -4.5), (3.2, 1.0, 2.6), M_METAL)
+    print("EPIC_OK: mastil radar, bocinas, luz, 2 anclas")
+except Exception as e:
+    print("EPIC_FAIL", e)
+
 def audit():
     small, empty = [], []
     for o in parts:

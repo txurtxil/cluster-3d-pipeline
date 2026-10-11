@@ -1,6 +1,6 @@
 {
   "mission_id": "petrolero_002",
-  "tag": "Petrolero V3 mission-loop, doble resolucion (41 estaciones, NS=16) 2026-10-11",
+  "tag": "Petrolero EPICO v1: resolucion 4x (81 est/NS=32) + mastil radar, bocinas, luz, anclas. 2026-10-11",
   "generator": "gen_petrolero_v3.py",
   "brief": "Petrolero escala L=250: casco obra viva/muerta, quilla, bulbo, 7 tanques, piping, superestructura por gradines, 8 ojos de buey, gruas, botes, chimenea, transom, helice. Metricas nauticas HARD.",
   "hard": {
@@ -13,11 +13,11 @@
       "tol": 0.5
     },
     "H": {
-      "value": 66.6,
+      "value": 74.8,
       "tol": 0.5
     },
     "PARTS": {
-      "value": 533,
+      "value": 542,
       "tol": 0
     },
     "draft": {
@@ -46,7 +46,7 @@
   "measurer": "measure_tanker.py",
   "injected_initial": {
     "L": 250,
-    "n_stations": 41,
-    "NS": 16
+    "n_stations": 81,
+    "NS": 32
   }
 }
