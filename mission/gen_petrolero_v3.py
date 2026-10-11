@@ -158,7 +158,7 @@ def hull_band(z0f, z1f, m, name, inflate=0.0):
     V, Fs = [], []
     table = [(1.0, 0.0), (0.995, 0.16), (0.98, 0.38), (0.945, 0.62),
              (0.885, 0.82), (0.78, 0.94), (0.60, 1.0)]
-    NS = 8                                  # muestras por banda
+    NS = P.get("NS", 8)                     # muestras por banda (parametro)
     NP = NS * 2
     for i in range(P["n_stations"]):
         t = i / (P["n_stations"] - 1)

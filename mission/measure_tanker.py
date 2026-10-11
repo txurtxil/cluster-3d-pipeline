@@ -10,6 +10,7 @@ hull_volume  = integracion por anillos de estacion de la obra viva (z<=TOL)
                + volumen de solidos cerrados completamente sumergidos
                (quilla, bulbo). Mallas abiertas en proa/pop: sin tapas.
 displacement = hull_volume_mm3 * 1.025e-9  (agua de mar, toneladas)
+tanks        = pares de limites Limite_tanque_* dividido entre 2 (6 en V3)
 """
 import bpy
 import json
@@ -122,10 +123,13 @@ if WATERLINE_BAND in obj_data:
 
 displacement = round(hull_volume * 1.025e-9, 4)
 
+tanks = sum(1 for o in objs if o.name.startswith("Limite_tanque")) // 2
+
 print("MEASURE_JSON " + json.dumps({
     "dims": {"L": round(max(xs) - min(xs), 3), "B": round(max(ys) - min(ys), 3),
              "H": round(max(zs) - min(zs), 3)},
     "counts": {"PARTS": len(objs), "UNIQ": len(uniq)},
+    "tanks": tanks,
     "manifold": {"ok": bad == 0, "bad_edges": bad},
     "nautical": {
         "draft": draft,
