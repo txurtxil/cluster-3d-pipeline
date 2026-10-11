@@ -48,3 +48,28 @@ Compartimento del chasis: 172 × 85,66 × 49,2 mm internos (margin 6 mm).
 
 ## Material de impresión
 PETG mínimo en zonas próximas a placa/PSU (el PLA se deforma con el calor residual).
+
+
+---
+
+## ACTUALIZACION VERIFICADA — 2026-10-11 (modelo comunitario Hrumque, printables 1341336)
+
+Medido del STL de referencia de la placa real ("Accurate 3D model of the AMD
+BC-250 board", usado por la comunidad para disenar carcasas que encajan):
+
+| Medida | Valor verificado | Estado |
+|--------|------------------|--------|
+| Longitud PCB | **341.5 mm** | VERIFICADO (el valor 305 de esta spec queda ANULADO: era 36.5 mm corto) |
+| Anchura PCB (con conectores) | **144.3 mm** | VERIFICADO (spec 140 era aproximado) |
+| Altura pila completa (PCB->techo) | **32.1 mm** | VERIFICADO (coincide con los 32 mm estimados) |
+| Agujeros montaje | (95 mm propia, sin confirmar) | **SIN VERIFICAR — requiere calibre físico** |
+
+FUENTE DEL CONFLICTO: esta spec original (305x140) procedia de mediciones
+propias no contrastadas; la documentacion comunitaria (elektricm) publicaba
+340/310 x 115 "segun metodo de medicion". El modelo 3D comunitario confirma
+341.5 x 144.3. La mision chasis_cluster_006 queda con env 341.5 x 144.3.
+
+Los agujeros de montaje NO estan modelados en el STL de referencia: su
+espaciado (95 mm) sigue pendiente de verificacion con calibre fisico, y se
+necesitan las posiciones X/Y respecto a esquina de referencia (una distancia
+sola no fija 4 taladros en una PCB de forma irregular).
