@@ -62,6 +62,6 @@ print("MEASURE_JSON " + json.dumps({
     "D_body": D_body, "D_total_con_asa": round(max(dims.x, dims.y), 3), "H": round(dims.z, 3),
     "wall": wall, "D_int": round(inner_r * 2, 3) if inner_r else None,
     "inner_depth": inner_depth, "capacity_ml_aprox": capacity,
-    "manifold": manifold_all, "components": len(meshes),
+    "manifold": {"ok": manifold_all}, "components": len(meshes),
     "not_measured": ["redondeo del filete", "seccion exacta del asa"] if len(meshes) > 1 else ["redondeo del filete"],
 }))
