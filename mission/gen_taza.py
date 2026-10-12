@@ -109,4 +109,4 @@ if HANDLE:
 
 bpy.ops.wm.save_as_mainfile(filepath=OUT_BLEND)
 bpy.ops.wm.stl_export(filepath=OUT_STL)
-print("GEN_OK partes:", len([o for o in SC.objects if o.type == "MESH"]))
+print("GEN_OK", json.dumps({"parts": len([o for o in SC.objects if o.type == "MESH"])}))
