@@ -1,0 +1,5 @@
+[14:13:11] PLAN: parametros inyectados (test) {'MODULE': 2.5, 'TEETH': 36.0, 'HELIX_ANGLE': 19.0, 'FACE_WIDTH': 15.0, 'BORE_D': 8.0, 'HUB_D': 30.0, 'HUB_LEN': 10.0, 'KEYWAY': 4.0, 'CHAMFER': 0.5}
+[14:13:11] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[14:13:13] ITER 1 medidas: dims={'pitch_d': 90.0, 'teeth': 36.0, 'helix_angle': 20.0, 'bore_d': 8.0} wall_min=N/A manifold=True
+[14:13:13] ITER 1: todas las HARD constraints pasan
+[14:13:13] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/engranaje_helicoidal_module_141310/REPORT.md
