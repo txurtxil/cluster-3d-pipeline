@@ -1,0 +1,13 @@
+[16:40:25] PLAN: parametros inyectados (test) {'L': 10.0, 'W': 10.0, 'H': 15.0}
+[16:40:25] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+Traceback (most recent call last):
+  File "/home/txurtxil/cluster-3d-pipeline/mission/mission_loop.py", line 163, in <module>
+    m = build(params, vdir)
+  File "/home/txurtxil/cluster-3d-pipeline/mission/mission_loop.py", line 93, in build
+    run_tool([BLENDER, "-b", "--factory-startup", "-P", str(GEN), "--",
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              str(vdir / "parameters.json"), str(blend), str(stl)], "GEN_OK")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/txurtxil/cluster-3d-pipeline/mission/mission_loop.py", line 86, in run_tool
+    raise RuntimeError(f"TOOL_FAIL {args[0]}: sin {grep_prefix}")
+RuntimeError: TOOL_FAIL /home/txurtxil/blender/blender: sin GEN_OK

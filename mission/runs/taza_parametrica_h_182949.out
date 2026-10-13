@@ -1,0 +1,22 @@
+[18:29:50] PLAN: parametros inyectados (test) {'H': 95.0, 'D_OUT': 90.0, 'WALL': 3.0, 'BOTTOM': 4.0, 'RIM_R': 1.0, 'HANDLE_D': 9.0, 'HANDLE_Z_LOW': 30.0, 'HANDLE_Z_HIGH': 68.0, 'HANDLE_REACH': 24.0}
+[18:29:50] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+Traceback (most recent call last):
+  File "/home/txurtxil/cluster-3d-pipeline/mission/mission_loop.py", line 163, in <module>
+    m = build(params, vdir)
+  File "/home/txurtxil/cluster-3d-pipeline/mission/mission_loop.py", line 93, in build
+    run_tool([BLENDER, "-b", "--factory-startup", "-P", str(GEN), "--",
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+              str(vdir / "parameters.json"), str(blend), str(stl)], "GEN_OK")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/txurtxil/cluster-3d-pipeline/mission/mission_loop.py", line 85, in run_tool
+    return json.loads(line[len(grep_prefix):].strip())
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)

@@ -1,0 +1,10 @@
+[09:37:25] PLAN: parametros inyectados (test) {'DIAM': 80.0, 'BLADES': 4.0, 'PITCH_RATIO': 0.85, 'BAR': 0.52, 'HUB_D': 20.0, 'HUB_LEN': 15.0, 'RAKE': 8.0, 'SKEW': 12.0, 'SHAFT_D': 8.0}
+[09:37:25] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[09:37:26] ITER 1 medidas: dims={'D': 80.0, 'blades': 4.0, 'pitch_ratio': 0.832, 'rake': 7.6, 'skew': 11.4, 'hub_d': 22.0, 'shaft_d': 8.0} wall_min=N/A manifold=True
+[09:37:26] ITER 1 FALLOS: {"skew": {"got": 11.4, "want": 12.0, "tol": 0.5}}
+[09:37:29] ITER 1 cambios: {"SKEW": 12.0} razon: El valor medido de SKEW (11.4) está fuera del rango permitido por la tolerancia (12.0 ± 0.5), por lo que se ajusta directamente a 12.0 para cumplir la restricción. El resto de parámetros ya están dentro de sus tolerancias y no requieren ajuste. RIM_R < WALL se mantiene por diseño.
+[09:37:29] ITER 2: construyendo y midiendo...
+[09:37:30] ITER 2 medidas: dims={'D': 80.0, 'blades': 4.0, 'pitch_ratio': 0.832, 'rake': 7.6, 'skew': 11.4, 'hub_d': 22.0, 'shaft_d': 8.0} wall_min=N/A manifold=True
+[09:37:30] ITER 2 FALLOS: {"skew": {"got": 11.4, "want": 12.0, "tol": 0.5}}
+[09:37:30] PLATEAU parametro-repetido iter 2
+[09:37:30] VERDICT=FAIL razon=PLATEAU parametro-repetido iter 2 -> /home/txurtxil/cluster-3d-pipeline/mission/runs/helice_de_barco_093723/REPORT.md

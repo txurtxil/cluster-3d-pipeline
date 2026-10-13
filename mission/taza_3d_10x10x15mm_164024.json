@@ -1,0 +1,1 @@
+{"mission_id": "taza_3d_10x10x15mm_164024", "brief": "taza 3D 10x10x15mm", "hard": {"L": {"value": 10.0, "tol": 0.2}, "W": {"value": 10.0, "tol": 0.2}, "H": {"value": 15.0, "tol": 0.2}}, "max_iters": 6, "tag": "api-8201", "injected_initial": {"L": 10.0, "W": 10.0, "H": 15.0}}

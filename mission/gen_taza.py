@@ -27,6 +27,16 @@ HANDLE = int(params.get("HANDLE", 1))
 HANDLE_D = float(params.get("HANDLE_D", 9.0))
 HANDLE_Z_LOW = float(params.get("HANDLE_Z_LOW", round(H * 0.30, 2)))
 HANDLE_Z_HIGH = float(params.get("HANDLE_Z_HIGH", round(H * 0.72, 2)))
+# auto-ajuste: el asa (radio HANDLE_D/2) debe caber DENTRO del cuerpo o su
+# superficie sobresale del borde y la H medida = asa, no cuerpo (leccion
+# 13-oct: taza H=70 media 72.964 = centro del arco 68.5 + radio 4.5).
+if HANDLE:
+    HANDLE_Z_HIGH = min(HANDLE_Z_HIGH, H - HANDLE_D / 2.0 - 1.0)
+    HANDLE_Z_LOW = max(HANDLE_Z_LOW, HANDLE_D / 2.0 + 1.0)
+    if HANDLE_Z_HIGH - HANDLE_Z_LOW < HANDLE_D:
+        mid = (HANDLE_Z_LOW + HANDLE_Z_HIGH) / 2.0
+        HANDLE_Z_LOW = mid - HANDLE_D
+        HANDLE_Z_HIGH = mid + HANDLE_D
 HANDLE_REACH = float(params.get("HANDLE_REACH", 22.0))
 
 R_OUT = D_OUT / 2.0

@@ -1,0 +1,18 @@
+{
+  "dims": {
+    "D": 80.0,
+    "blades": 4.0,
+    "pitch_ratio": 0.832,
+    "rake": 7.6,
+    "skew": 11.4,
+    "hub_d": 22.0,
+    "shaft_d": 8.0
+  },
+  "manifold": {
+    "ok": true
+  },
+  "components": 2,
+  "not_measured": [
+    "BAR (area de palas): estimado por construccion, no por vertices"
+  ]
+}

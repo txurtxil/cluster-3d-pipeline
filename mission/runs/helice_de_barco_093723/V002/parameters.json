@@ -1,0 +1,11 @@
+{
+  "DIAM": 80.0,
+  "BLADES": 4.0,
+  "PITCH_RATIO": 0.85,
+  "BAR": 0.52,
+  "HUB_D": 20.0,
+  "HUB_LEN": 15.0,
+  "RAKE": 8.0,
+  "SKEW": 12.0,
+  "SHAFT_D": 8.0
+}

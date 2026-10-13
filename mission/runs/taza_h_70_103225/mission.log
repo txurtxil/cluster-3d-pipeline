@@ -1,0 +1,22 @@
+[10:32:26] PLAN: parametros inyectados (test) {'H': 70.0, 'D_OUT': 70.0, 'WALL': 3.0, 'BOTTOM': 4.0, 'RIM_R': 1.0, 'HANDLE_D': 9.0, 'HANDLE_Z_LOW': 30.0, 'HANDLE_Z_HIGH': 68.0, 'HANDLE_REACH': 24.0}
+[10:32:26] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[10:32:27] ITER 1 medidas: dims={'H': 72.964, 'D_body': 70.0, 'WALL': 3.0} wall_min=N/A manifold=False
+[10:32:27] ITER 1 FALLOS: {"H": {"got": 72.964, "want": 70.0, "tol": 0.5}}
+[10:32:30] ITER 1 cambios: {"H": 69.0} razon: La altura medida H (72.964) excede el valor deseado (70.0) dentro de la tolerancia permitida (±0.5). Para corregirlo, se reduce H a 69.0 para asegurar que la nueva altura medida esté dentro del rango permitido. RIM_R (1.0) ya cumple con RIM_R < WALL (3.0), por lo que no se requiere ajuste adicional.
+[10:32:30] ITER 2: construyendo y midiendo...
+[10:32:32] ITER 2 medidas: dims={'H': 72.964, 'D_body': 70.0, 'WALL': 3.0} wall_min=N/A manifold=False
+[10:32:32] ITER 2 FALLOS: {"H": {"got": 72.964, "want": 70.0, "tol": 0.5}}
+[10:32:52] ITER 2 cambios: {"H": 68.0} razon: El valor medido de H (72.964) excede el límite superior permitido (70.5), por lo que se reduce H a 68.0 para cumplir con la restricción H ≤ 70.5. RIM_R < WALL se mantiene al ser RIM_R = 1.0 y WALL = 3.0.
+[10:32:52] ITER 3: construyendo y midiendo...
+[10:32:53] ITER 3 medidas: dims={'H': 72.964, 'D_body': 70.0, 'WALL': 3.0} wall_min=N/A manifold=False
+[10:32:53] ITER 3 FALLOS: {"H": {"got": 72.964, "want": 70.0, "tol": 0.5}}
+[10:32:55] ITER 3 cambios: {"H": 67.0} razon: El valor medido de H (72.964) excede el límite permitido (70.0 ± 0.5). Para corregirlo, se reduce H a 67.0, asegurando que el nuevo valor esté dentro del rango permitido. Esto no afecta las otras restricciones, y RIM_R (1.0) sigue siendo menor que WALL (3.0), cumpliendo con la condición de diseño.
+[10:32:55] ITER 4: construyendo y midiendo...
+[10:32:56] ITER 4 medidas: dims={'H': 72.964, 'D_body': 70.0, 'WALL': 3.0} wall_min=N/A manifold=False
+[10:32:56] ITER 4 FALLOS: {"H": {"got": 72.964, "want": 70.0, "tol": 0.5}}
+[10:33:17] ITER 4 cambios: {"H": 67.0} razon: El valor medido de H (72.964) excede el valor deseado (70.0) con un margen superior al tolerado (0.5). Ajustar H a 67.0 reduce la altura para cumplir con la restricción, manteniendo los demás parámetros dentro de los límites. RIM_R (1.0) ya cumple con RIM_R < WALL (3.0), por lo que no requiere ajuste.
+[10:33:17] ITER 5: construyendo y midiendo...
+[10:33:18] ITER 5 medidas: dims={'H': 72.964, 'D_body': 70.0, 'WALL': 3.0} wall_min=N/A manifold=False
+[10:33:18] ITER 5 FALLOS: {"H": {"got": 72.964, "want": 70.0, "tol": 0.5}}
+[10:33:18] PLATEAU parametro-repetido iter 5
+[10:33:18] VERDICT=FAIL razon=PLATEAU parametro-repetido iter 5 -> /home/txurtxil/cluster-3d-pipeline/mission/runs/taza_h_70_103225/REPORT.md
