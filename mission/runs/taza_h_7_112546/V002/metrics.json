@@ -1,0 +1,21 @@
+{
+  "dims": {
+    "H": 36.338,
+    "D_body": null,
+    "WALL": null
+  },
+  "D_body": null,
+  "D_total_con_asa": 117.0,
+  "H": 36.338,
+  "wall": null,
+  "D_int": null,
+  "inner_depth": 29.919,
+  "capacity_ml_aprox": null,
+  "manifold": {
+    "ok": false
+  },
+  "components": 1,
+  "not_measured": [
+    "redondeo del filete"
+  ]
+}

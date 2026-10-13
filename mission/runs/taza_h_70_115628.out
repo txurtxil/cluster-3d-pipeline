@@ -1,0 +1,5 @@
+[11:56:29] PLAN: parametros inyectados (test) {'H': 70.0, 'D_OUT': 90.0, 'WALL': 3.0, 'BOTTOM': 4.0, 'RIM_R': 1.0, 'HANDLE_D': 9.0, 'HANDLE_Z_LOW': 30.0, 'HANDLE_Z_HIGH': 68.0, 'HANDLE_REACH': 24.0}
+[11:56:29] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[11:56:30] ITER 1 medidas: dims={'H': 70.0, 'D_body': 90.0, 'WALL': 3.0} wall_min=N/A manifold=True
+[11:56:30] ITER 1: todas las HARD constraints pasan
+[11:56:30] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/taza_h_70_115628/REPORT.md

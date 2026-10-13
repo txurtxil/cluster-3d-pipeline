@@ -1,0 +1,83 @@
+# REPORT
+
+MISSION: helice_de_barco_131051 api-8201
+INPUT: Helice de barco: DIAM=120, BLADES=5, PITCH_RATIO=1.1, BAR=0.52, HUB_D=20, HUB_LEN=15, RAKE=15, SKEW=12, SHAFT_D=8
+
+## HARD CONSTRAINTS
+{
+ "D": {
+  "value": 120.0,
+  "tol": 0.5
+ },
+ "blades": {
+  "value": 5.0,
+  "tol": 0.5
+ },
+ "pitch_ratio": {
+  "value": 1.1,
+  "tol": 0.5
+ },
+ "rake": {
+  "value": 15.0,
+  "tol": 0.5
+ },
+ "skew": {
+  "value": 12.0,
+  "tol": 0.5
+ },
+ "shaft_d": {
+  "value": 8.0,
+  "tol": 0.5
+ }
+}
+
+## FINAL PARAMETERS
+{
+ "DIAM": 120.0,
+ "BLADES": 5.0,
+ "PITCH_RATIO": 1.1,
+ "BAR": 0.52,
+ "HUB_D": 20.0,
+ "HUB_LEN": 15.0,
+ "RAKE": 15.0,
+ "SKEW": 12.0,
+ "SHAFT_D": 8.0
+}
+
+## METRICS (ultima version medida)
+{
+ "dims": {
+  "D": 120.0,
+  "blades": 5.0,
+  "pitch_ratio": 1.088,
+  "rake": 14.91,
+  "skew": 11.9,
+  "hub_d": 21.97,
+  "shaft_d": 7.99
+ },
+ "manifold": {
+  "ok": true
+ },
+ "components": 2,
+ "not_measured": [
+  "BAR (area de palas): estimado por construccion, no por vertices"
+ ]
+}
+
+## ITERATIONS
+total: 1
+## ROLLBACKS
+v0.1: sin rollback multi-version (una version por iteracion, nunca se sobrescribe)
+
+## UNKNOWN / NOT_MEASURED
+[]
+
+## WARNINGS
+Inyeccion inicial de fallo (test del loop)
+
+## PRINTABILITY
+manifold: {'ok': True}
+STL exportado y hash SHA256 registrado por version
+
+VERDICT: PASS
+REASON: convergencia

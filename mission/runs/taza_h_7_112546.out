@@ -1,0 +1,10 @@
+[11:25:47] PLAN: parametros inyectados (test) {'H': 7.0, 'D_OUT': 90.0, 'WALL': 3.0, 'BOTTOM': 4.0, 'RIM_R': 1.0, 'HANDLE_D': 9.0, 'HANDLE_Z_LOW': 30.0, 'HANDLE_Z_HIGH': 68.0, 'HANDLE_REACH': 24.0}
+[11:25:47] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[11:25:49] ITER 1 medidas: dims={'H': 36.338, 'D_body': None, 'WALL': None} wall_min=N/A manifold=False
+[11:25:49] ITER 1 FALLOS: {"H": {"got": 36.338, "want": 7.0, "tol": 0.5}, "D_body": "UNKNOWN", "WALL": "UNKNOWN"}
+[11:26:10] ITER 1 cambios: {"H": 7.0} razon: El valor medido de H (36.338) está muy por encima del valor deseado (7.0), lo que indica un error de escala o unidad. Dado que el único parámetro que afecta directamente la altura H es H mismo, se mantiene el valor objetivo de 7.0. El resto de los parámetros ya cumplen con sus restricciones o no afectan directamente a H. El error probablemente proviene de una mala interpretación de unidades o escalado en la simulación, pero como solo se permite cambiar un parámetro, se corrige H a su valor objetivo.
+[11:26:10] ITER 2: construyendo y midiendo...
+[11:26:11] ITER 2 medidas: dims={'H': 36.338, 'D_body': None, 'WALL': None} wall_min=N/A manifold=False
+[11:26:11] ITER 2 FALLOS: {"H": {"got": 36.338, "want": 7.0, "tol": 0.5}, "D_body": "UNKNOWN", "WALL": "UNKNOWN"}
+[11:26:11] PLATEAU parametro-repetido iter 2
+[11:26:11] VERDICT=FAIL razon=PLATEAU parametro-repetido iter 2 -> /home/txurtxil/cluster-3d-pipeline/mission/runs/taza_h_7_112546/REPORT.md
