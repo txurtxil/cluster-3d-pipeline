@@ -1,0 +1,5 @@
+[15:26:23] PLAN: parametros inyectados (test) {'DIAM': 60.0, 'HEIGHT': 50.0, 'WALL': 3.0, 'THREAD_PITCH': 4.0, 'LID_HEIGHT': 12.0, 'SEAL_GROOVE': 0.0, 'CHAMFER': 0.5}
+[15:26:23] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[15:26:25] ITER 1 medidas: dims={'D_body': 60.0, 'H': 50.0, 'wall': 3.0, 'lid_height': 12.0, 'thread_pitch': 4.0} wall_min=N/A manifold=True
+[15:26:25] ITER 1: todas las HARD constraints pasan
+[15:26:25] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_roscada_diam_152622/REPORT.md

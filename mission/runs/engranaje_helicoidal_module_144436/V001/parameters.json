@@ -1,0 +1,11 @@
+{
+  "MODULE": 1.25,
+  "TEETH": 48.0,
+  "HELIX_ANGLE": 15.0,
+  "FACE_WIDTH": 15.0,
+  "BORE_D": 8.0,
+  "HUB_D": 30.0,
+  "HUB_LEN": 10.0,
+  "KEYWAY": 4.0,
+  "CHAMFER": 0.5
+}

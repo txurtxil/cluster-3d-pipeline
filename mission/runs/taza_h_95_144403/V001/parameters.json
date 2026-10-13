@@ -1,0 +1,11 @@
+{
+  "H": 95.0,
+  "D_OUT": 90.0,
+  "WALL": 3.0,
+  "BOTTOM": 4.0,
+  "RIM_R": 1.0,
+  "HANDLE_D": 12.0,
+  "HANDLE_Z_LOW": 30.0,
+  "HANDLE_Z_HIGH": 68.0,
+  "HANDLE_REACH": 24.0
+}

@@ -1,0 +1,5 @@
+[14:49:29] PLAN: parametros inyectados (test) {'DIAM': 60.0, 'BLADES': 3.0, 'PITCH_RATIO': 0.85, 'BAR': 0.52, 'HUB_D': 20.0, 'HUB_LEN': 15.0, 'RAKE': 8.0, 'SKEW': 12.0, 'SHAFT_D': 8.0}
+[14:49:29] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[14:49:30] ITER 1 medidas: dims={'D': 60.0, 'blades': 3.0, 'pitch_ratio': 0.803, 'rake': 7.88, 'skew': 11.8, 'hub_d': 22.0, 'shaft_d': 7.99} wall_min=N/A manifold=True
+[14:49:30] ITER 1: todas las HARD constraints pasan
+[14:49:30] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/helice_de_barco_144928/REPORT.md

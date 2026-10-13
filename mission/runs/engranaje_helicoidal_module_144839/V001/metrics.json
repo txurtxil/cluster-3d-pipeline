@@ -1,0 +1,19 @@
+{
+  "dims": {
+    "pitch_d": 150.0,
+    "teeth": 50.0,
+    "helix_angle": 19.0,
+    "bore_d": 8.0
+  },
+  "tip_d": 156.0,
+  "root_d": 142.5,
+  "manifold": {
+    "ok": true
+  },
+  "components": 2,
+  "not_measured": [
+    "pitch_d DERIVADO (RA y modulo estimados; no medible directo por ray-casting)",
+    "raiz corregida por EMBED=0.25 (convencion compartida con el generador)",
+    "helix por pendiente de fase en 4 anillos (requiere twist/tramo < medio-paso)"
+  ]
+}
