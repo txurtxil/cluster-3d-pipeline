@@ -15,8 +15,6 @@
   snapshot en repo cluster-api/), wrappers pipeline3d.sh/mision3d_wait.sh
   (waiter tolera 4×404 = carrera registro), **OPERADOR bot @txurtxil_operador_bot**
   (~/operador/operador.py, copia en repo operador/; comandos /pide /mision
-  /estado /entrega /ayuda; chat autorizado 1306877990), **VISOR 3D** :8787
-  (~/visor/index.html + three.min.js de Nexus, servicio systemd `visor`),
   MCP server ~/mcp-txurtxil/server.py (stdio, tools estado/temps/mision/entrega,
   probado, sin host conectado aún — candidato: nodo MCP de n8n), n8n :5678
   (workflow briefing 8:05 PENDIENTE clic Publish), docker: n8n/SearXNG/Open
@@ -62,7 +60,6 @@ visor (pendiente añadir). Push desde bc250-1: funciona.
 1. Clic Publish del workflow n8n (briefing 8:05). 2. Enchufar nodo MCP de n8n
    al server mcp-txurtxil. 3. node2 (encender con botón) → A/B Coder-30B-A3B
    → independencia total de LLM cloud. 4. Visor: añadir proxy host en NPM UI
-   (nexus.cangrejo.mundaka.net → 192.168.10.140:8787, SSL) para verlo fuera
    de casa; 3MF aún no (solo STL). 5. BIOS bc250-1 (probablemente ya tiene
    Restore on AC Loss — los reinicios tras los cortes lo sugieren).
 
