@@ -79,12 +79,14 @@ def traducir(frase):
         line = line[6:].strip()
     if "NOSE" in line.upper():
         return None
-    m = re.match(r"^(Taza|Engranaje helicoidal|H[eé]lice( de barco)?)\s*:\s*(.+)$", line)
+    m = re.match(r"^(Taza|Engranaje( helicoidal)?|H[eé]lice( de barco)?)\s*:\s*(.+)$", line)
     if not m:
         return None
-    fam, resto = m.group(1), m.group(3)
+    fam, resto = m.group(1), m.group(4)
     if fam[0] in "Hh":
         fam = "Helice de barco"
+    elif fam.startswith("Engranaje"):
+        fam = "Engranaje helicoidal"
     return "%s: %s" % (fam, resto)
 
 
