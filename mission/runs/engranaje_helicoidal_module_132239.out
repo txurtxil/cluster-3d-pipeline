@@ -1,0 +1,10 @@
+[13:22:40] PLAN: parametros inyectados (test) {'MODULE': 2.5, 'TEETH': 36.0, 'HELIX_ANGLE': 19.0, 'FACE_WIDTH': 15.0, 'BORE_D': 8.0, 'HUB_D': 30.0, 'HUB_LEN': 10.0, 'KEYWAY': 4.0, 'CHAMFER': 0.5}
+[13:22:40] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[13:22:42] ITER 1 medidas: dims={'pitch_d': 90.0, 'teeth': 36.0, 'helix_angle': 20.0, 'bore_d': 8.0} wall_min=N/A manifold=True
+[13:22:42] ITER 1 FALLOS: {"helix_angle": {"got": 20.0, "want": 19.0, "tol": 0.5}}
+[13:22:43] ITER 1 cambios: {"HELIX_ANGLE": 19.0} razon: El ángulo de hélice medido (20.0) excede el valor deseado (19.0) dentro del límite de tolerancia (0.5), por lo que se ajusta directamente al valor objetivo para cumplir con la restricción.
+[13:22:43] ITER 2: construyendo y midiendo...
+[13:22:45] ITER 2 medidas: dims={'pitch_d': 90.0, 'teeth': 36.0, 'helix_angle': 20.0, 'bore_d': 8.0} wall_min=N/A manifold=True
+[13:22:45] ITER 2 FALLOS: {"helix_angle": {"got": 20.0, "want": 19.0, "tol": 0.5}}
+[13:22:45] PLATEAU parametro-repetido iter 2
+[13:22:45] VERDICT=FAIL razon=PLATEAU parametro-repetido iter 2 -> /home/txurtxil/cluster-3d-pipeline/mission/runs/engranaje_helicoidal_module_132239/REPORT.md

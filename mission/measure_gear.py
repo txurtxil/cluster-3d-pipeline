@@ -63,7 +63,7 @@ pitch_d = 2.0 * RP_est
 
 # ---- teeth por armónica circular de la cresta
 cang = [cmath.exp(1j * math.atan2(v.y, v.x)) for v in crest]
-spec = [(k, abs(sum(z ** k for z in cang))) for k in range(16, 33)]
+spec = [(k, abs(sum(z ** k for z in cang))) for k in range(6, 61)]
 teeth = max(spec, key=lambda t: t[1])[0]
 P_meas = 2 * math.pi / teeth
 
