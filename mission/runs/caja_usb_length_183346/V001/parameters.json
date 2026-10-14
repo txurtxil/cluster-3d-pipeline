@@ -1,0 +1,13 @@
+{
+  "LENGTH": 120.0,
+  "WIDTH": 80.0,
+  "HEIGHT": 35.0,
+  "WALL": 2.5,
+  "COMP_X": 3.0,
+  "COMP_Y": 2.0,
+  "DIVIDER_W": 2.0,
+  "DEPTH": 20.0,
+  "TAB_W": 8.0,
+  "TAB_T": 1.2,
+  "CHAMFER": 0.5
+}

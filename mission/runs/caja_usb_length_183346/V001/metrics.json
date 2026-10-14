@@ -1,0 +1,21 @@
+{
+  "dims": {
+    "L_body": 120.0,
+    "W": 82.7,
+    "H_body": 35.0,
+    "H_total": 39.5,
+    "wall": 2.5,
+    "compartments_x": 3.0,
+    "compartments_y": 2.0,
+    "compartments": 6.0
+  },
+  "manifold": {
+    "ok": true
+  },
+  "components": 21,
+  "not_measured": [
+    "fuerza del snap (verificacion fisica al imprimir)",
+    "W incluye pestanas de la tapa; L_body es el cuerpo",
+    "compartimentos por autoridad de diseno (objetos div_*)"
+  ]
+}

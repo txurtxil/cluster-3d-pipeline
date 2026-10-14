@@ -1,0 +1,5 @@
+[18:33:47] PLAN: parametros inyectados (test) {'LENGTH': 120.0, 'WIDTH': 80.0, 'HEIGHT': 35.0, 'WALL': 2.5, 'COMP_X': 3.0, 'COMP_Y': 2.0, 'DIVIDER_W': 2.0, 'DEPTH': 20.0, 'TAB_W': 8.0, 'TAB_T': 1.2, 'CHAMFER': 0.5}
+[18:33:47] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[18:33:48] ITER 1 medidas: dims={'L_body': 120.0, 'W': 82.7, 'H_body': 35.0, 'H_total': 39.5, 'wall': 2.5, 'compartments_x': 3.0, 'compartments_y': 2.0, 'compartments': 6.0} wall_min=N/A manifold=True
+[18:33:48] ITER 1: todas las HARD constraints pasan
+[18:33:48] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/caja_usb_length_183346/REPORT.md
