@@ -194,6 +194,171 @@ def cmd_estado():
             "· memoria   : %s" % (api or "SIN RESPUESTA", brain or "SIN RESPUESTA", temps or "?", mem or "?"))
 
 
+PROMPT_NUEVA = (
+    'Eres el ingeniero de generadores 3D del cluster Txurtxil (fase QWEN3-100). '
+    'Escribe UN fichero Python para Blender (bpy): gen_{slug}.py para esta pieza: {desc}\n'
+    'CONTRATO (innegociable):\n'
+    '- CLI: blender -b --factory-startup -P gen_{slug}.py -- params.json out.blend out.stl\n'
+    '- Todo valor desde params.json con defaults sensatos via params.get (nada quemado).\n'
+    '- Todo por from_pydata (solidos cerrados, manifold por construccion). PROHIBIDO booleanos '
+    '(EXACT corrompe, FAST no es determinista); piezas que encajen van SOLAPADAS (el slicer une).\n'
+    '- Pieza centrada en XY, base en z=0, dimension principal ~ el param SIZE (mm, default 60).\n'
+    '- Debe ser IMPRIMIBLE FDM: sin voladizos >60 grados sin soporte, paredes >=1.2 mm.\n'
+    '- Ultima linea stdout EXACTAMENTE: GEN_OK {{"parts": N}}\n'
+    '- Estilo: determinista, sin numeros magicos. SOLO codigo, sin explicaciones.\n'
+    'Empieza con: import bpy, json, sys, math\n'
+)
+
+PROMPT_NUEVA_FIX = (
+    'El codigo anterior fallo. Traza REAL completa:\n{errores}\n'
+    'Reescribe gen_{slug}.py COMPLETO corrigiendo exactamente esos fallos '
+    '(no anadas features nuevas). Mismo contrato. Solo codigo, sin fences markdown.\n'
+)
+
+PROMPT_CAD = (
+    'Eres el diseñador CAD del cluster Txurtxil. Para esta pieza: {desc}\n'
+    'Responde SOLO con un JSON (sin prosa, sin fences markdown) con esta receta:\n'
+    '{{"size": <numero principal mm>, "ops": [ {{"op":"box","dims":[x,y,z],"center":[x,y,z]}}, '
+    '{{"op":"cylinder","radius":r,"height":h,"axis":"z","center":[x,y,z],"subtract":true}} ]}}\n'
+    '- ops en orden de construccion. box/cylinder/sphere. center opcional (default [0,0,0]).\n'
+    '- "subtract":true en cualquier op la RESTA de la pieza acumulada (taladros, huecos).\n'
+    '- Dimension principal ~"size" mm. Pieza centrada en XY, apoyada en z>=0.\n'
+    '- Imprimible FDM: paredes >=1.2 mm (haz los huecos con subtract, no paredes finas).\n'
+    '- SOLO el JSON. Nada mas. Ni una palabra fuera del JSON.\n'
+)
+
+PROMPT_CAD_FIX = (
+    'La receta JSON fallo al interpretarse. Error REAL:\n{errores}\n'
+    'Reescribe SOLO el JSON corregido (mismo formato). Nada mas que el JSON.\n'
+)
+
+
+def cmd_cad(descripcion):
+    """Text-to-CAD: el modelo LOCAL escribe una RECETA JSON (datos, no codigo);
+    el builder fijo (build123d/OpenCascade) la fabrica. Gates: JSON valido,
+    build x2 (md5), entrega STL."""
+    import re as _re, base64 as b64
+    slug = "cad_" + _re.sub(r"[^a-z0-9]+", "_", descripcion.lower())[:20].strip("_")
+    d = os.path.join(HOME, "nuevas", slug)
+    os.makedirs(d, exist_ok=True)
+    builder_b64 = open(os.path.join(HOME, "operador", "builder_cad.py.b64")).read().strip()
+    errores = ""
+    for it in range(1, 4):
+        p = PROMPT_CAD_FIX.format(errores=errores) if errores else PROMPT_CAD.format(desc=descripcion)
+        try:
+            resp = llama(p, max_tokens=900, stop=["\n# FIN"]).strip()
+        except Exception as e:
+            return ("ERROR hablando con el cerebro: %s" % e, None)
+        mjson = _re.search(r"\{.*\}", resp, _re.S)
+        if not mjson:
+            errores = "salida sin JSON: " + resp[:200]
+            continue
+        rpath = os.path.join(d, "receta.json")
+        open(rpath, "w").write(mjson.group(0))
+        try:
+            json.loads(mjson.group(0))
+        except Exception as e:
+            errores = "JSON invalido: %s" % str(e)[:200]
+            continue
+        b64r = b64.b64encode(open(rpath, "rb").read()).decode()
+        rem = (
+            "export PATH=$HOME/.local/bin:$PATH; B=$(mktemp -d); "
+            "echo %s | base64 -d > $B/builder.py; "
+            "echo %s | base64 -d > $B/receta.json; "
+            "cd $B; "
+            "for k in a b; do uv run --quiet --with build123d python builder.py receta.json $k.stl > $B/l$k 2>&1; done; "
+            "M1=$(md5sum $B/a.stl 2>/dev/null | cut -c1-12); "
+            "M2=$(md5sum $B/b.stl 2>/dev/null | cut -c1-12); "
+            "echo \"GATES md5:$M1/$M2\"; "
+            "if [ -n \"$M1\" ] && [ \"$M1\" = \"$M2\" ]; then echo STLB64; base64 -w0 $B/a.stl; echo; fi; "
+            "tail -3 $B/la $B/lb"
+        ) % (builder_b64, b64r)
+        out = sh(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "bc250", rem], 420)
+        m = _re.search(r"md5:([0-9a-f]+)/([0-9a-f]+)", out)
+        mb = _re.search(r"STLB64\n([A-Za-z0-9+/=]+)", out)
+        if m and m.group(1) == m.group(2) and m.group(1) != "" and mb:
+            stl = os.path.join(d, slug + ".stl")
+            open(stl, "wb").write(b64.b64decode(mb.group(1)))
+            import hashlib
+            m1 = hashlib.md5(open(stl, "rb").read()).hexdigest()
+            z = cmd_zip_local(stl, os.path.join(d, slug + ".zip"))
+            return ("PIEZA CAD CREADA (text-to-cad, iter %d): %s\nSTL: %d bytes, md5 %s. "
+                    "Revisa el STL; si te gusta, pide registrarla como familia."
+                    % (it, slug, os.path.getsize(stl), m1[:12]), z)
+        errores = ("builder/gates FAIL:\n" + (out[-500:] if out else "(sin salida remota)"))
+    return ("El cerebro local no convergio en 3 iteraciones. Ultimos errores: " + errores[:400], None)
+
+
+def cmd_nueva(descripcion, tg, token, chat):
+    """Fase QWEN3-100: el cerebro LOCAL escribe el generador; las gates deciden.
+    Kimi no participa. Devuelve (mensaje, ruta_zip_o_None)."""
+    import re as _re
+    slug = "custom_" + _re.sub(r"[^a-z0-9]+", "_", descripcion.lower())[:20].strip("_")
+    d = os.path.join(HOME, "nuevas", slug)
+    os.makedirs(d, exist_ok=True)
+    prompt = PROMPT_NUEVA.format(desc=descripcion, slug=slug)
+    errores = ""
+    for it in range(1, 4):
+        p = PROMPT_NUEVA_FIX.format(errores=errores, slug=slug) if errores else prompt
+        try:
+            code = llama(p, max_tokens=3000, stop=["\n# FIN"]).strip()
+        except Exception as e:
+            return ("ERROR hablando con el cerebro: %s" % e, None)
+        lines = code.splitlines()
+        while lines and (lines[0].strip().startswith("```") or not lines[0].strip()):
+            lines.pop(0)
+        while lines and (lines[-1].strip().startswith("```") or not lines[-1].strip()):
+            lines.pop()
+        gpath = os.path.join(d, "gen_%s.py" % slug)
+        open(gpath, "w").write("\n".join(lines) + "\n")
+        g1 = sh(["python3", "-m", "py_compile", gpath], 20)
+        if "Error" in g1:
+            errores = "G1 py_compile: " + g1.splitlines()[-1][:200]
+            continue
+        # transferir a bc250 en base64 (argv seguro) y correr gates alli
+        import base64 as b64
+        b64code = b64.b64encode(open(gpath, "rb").read()).decode()
+        rem = (
+            "B=$(mktemp -d) && echo %s | base64 -d > $B/gen.py && "
+            "echo '{\"SIZE\": 60}' > $B/p.json && "
+            "cd ~/cluster-3d-pipeline/mission && "
+            "~/blender/blender -b --factory-startup -P $B/gen.py -- $B/p.json $B/a.blend $B/a.stl > $B/l1 2>&1; "
+            "~/blender/blender -b --factory-startup -P $B/gen.py -- $B/p.json $B/b.blend $B/b.stl > $B/l2 2>&1; "
+            "M1=$(md5sum $B/a.stl 2>/dev/null | cut -c1-12); "
+            "M2=$(md5sum $B/b.stl 2>/dev/null | cut -c1-12); "
+            "G1=$(grep -c GEN_OK $B/l1); G2=$(grep -c GEN_OK $B/l2); "
+            "~/blender/blender -b $B/a.blend -P ~/cluster-3d-pipeline/mission/measure_generic.py 2>/dev/null | grep MEASURE_JSON; "
+            "echo \"GATES gen_ok:$G1/$G2 md5:$M1/$M2\"; "
+            "if [ \"$M1\" = \"$M2\" ] && [ -n \"$M1\" ]; then "
+            "  echo STLB64; base64 -w0 $B/a.stl; echo; fi"
+        )
+        rem = rem % b64code
+        # copiar de vuelta el blend/stl por base64 (tamanos pequenos esperados)
+        out = sh(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "bc250", rem], 300)
+        m = _re.search(r"md5:([0-9a-f]+)/([0-9a-f]+)", out)
+        mj = _re.search(r"MEASURE_JSON (.*)", out)
+        gen_ok = ("gen_ok:1/1" in out)
+        mb = _re.search(r"STLB64\n([A-Za-z0-9+/=]+)", out)
+        if m and m.group(1) == m.group(2) and m.group(1) != "" and gen_ok and mb:
+            stl = os.path.join(d, "final.stl")
+            open(stl, "wb").write(b64.b64decode(mb.group(1)))
+            z = cmd_zip_local(stl, os.path.join(d, "final.zip"))
+            msg = ("PIEZA NUEVA CREADA por el cerebro local (iter %d): %s\n%s\n"
+                   "md5 determinista: %s. Revisa el STL; si te gusta, pide a Kimi "
+                   "registrarla como familia fija." % (it, slug, mj.group(1)[:300] if mj else "", m.group(1)))
+            return (msg, z)
+        log = out[-400:] if out else "(sin salida)"
+        errores = ("Gates FAIL: %s | cola: %s" % (m.group(0) if m else "sin md5", log))
+    return ("El cerebro local no convergio en 3 iteraciones. Errores: " + errores[:400], None)
+
+
+def cmd_zip_local(stl_path, zpath):
+    import zipfile
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_DEFLATED) as z:
+        z.write(stl_path, os.path.basename(stl_path).replace(".stl", "") + ".stl")
+    return zpath
+
+
 def cmd_mision(brief):
     if not brief:
         return "uso: /mision <brief con CLAVE=NUM...>"
@@ -260,6 +425,26 @@ def main():
                 elif cmd == "/mision":
                     tg(token, "sendMessage", chat_id=chat, text="Mision lanzada, espero veredicto (hasta 10 min)...")
                     r = cmd_mision(arg)
+                elif cmd == "/nueva":
+                    if not arg:
+                        r = 'uso: /nueva un cubo hueco de 40 mm con taladro de 10'
+                    else:
+                        tg(token, "sendMessage", chat_id=chat,
+                           text="Creando pieza nueva con el cerebro LOCAL (QWEN3-100, hasta 3 intentos, ~5-15 min)...")
+                        msg, z = cmd_nueva(arg, tg, token, chat)
+                        if z and z.endswith(".zip"):
+                            tg_doc(token, chat, z, "Pieza nueva: " + arg)
+                        r = msg
+                elif cmd == "/cad":
+                    if not arg:
+                        r = 'uso: /cad un cubo hueco de 40 mm con un taladro de 10 mm'
+                    else:
+                        tg(token, "sendMessage", chat_id=chat,
+                           text="Text-to-CAD: tu Qwen3 escribe build123d, OpenCascade fabrica (hasta 3 intentos)...")
+                        msg, z = cmd_cad(arg)
+                        if z and z.endswith(".zip"):
+                            tg_doc(token, chat, z, "Pieza CAD: " + arg)
+                        r = msg
                 elif cmd == "/pide":
                     if not arg:
                         r = 'uso: /pide quiero una helice de 80 mm con 4 palas'
@@ -268,8 +453,9 @@ def main():
                            text="Entendido, traduciendo y fabricando (2-5 min)...")
                         brief = traducir(arg)
                         if not brief:
-                            r = ("No supe traducir eso. Prueba con taza, engranaje helicoidal "
-                                 "o helice de barco. O usa /mision con formato CLAVE=NUM.")
+                            r = ("No la tengo registrada (existen: taza, engranaje helicoidal, "
+                                 "helice de barco, tarro roscado, caja usb). Si quieres crearla "
+                                 "nueva con el cerebro local: /nueva <descripcion>")
                         else:
                             tg(token, "sendMessage", chat_id=chat, text="Brief: " + brief)
                             brief = completar_brief(brief)
