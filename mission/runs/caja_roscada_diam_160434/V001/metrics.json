@@ -1,0 +1,18 @@
+{
+  "dims": {
+    "D_body": 60.0,
+    "H": 50.0,
+    "wall": 3.0,
+    "lid_height": 12.0,
+    "thread_pitch": 4.0
+  },
+  "thread_pitch_lid": 4.0,
+  "manifold": {
+    "ok": true
+  },
+  "components": 4,
+  "not_measured": [
+    "SEAL_GROOVE (reservado v2)",
+    "tapa/falda/cresta son solidos solapados: el slicer los une"
+  ]
+}
