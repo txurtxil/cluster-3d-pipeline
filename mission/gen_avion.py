@@ -1,4 +1,4 @@
-"""gen_avion.py v3.1 — Gramatica Boeing 747 (familia 7). Malla sellada.
+"""gen_avion.py v4.0 — Gramatica Boeing 747 (familia 7). Malla sellada.
 Uso: blender -b --factory-startup -P gen_avion.py -- <params.json> <out.blend> <out.stl>
 Criterios juez v2.2 + topologia: fuselaje 8 estaciones, cubierta superior con
 transiciones, motores completos escalonados, bogies 4 ruedas, deriva vertical,
@@ -21,6 +21,10 @@ TAIL = int(P.get("TAIL", 1))
 WINGLETS = int(P.get("WINGLETS", 1))
 HUMP = int(P.get("HUMP", 1))
 GEAR = int(P.get("GEAR", 1))
+KINK = int(P.get("KINK", 1))
+WINDOWS = int(P.get("WINDOWS", 1))
+FAIRING = int(P.get("FAIRING", 1))
+COCKPIT = int(P.get("COCKPIT", 1))
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 SC = bpy.context.scene
@@ -104,17 +108,30 @@ if HUMP:
     cyl_x(rdeck, 0.20 * LENGTH, 0.29 * LENGTH, 0, zdeck, "joroba_cubierta")
     cone_x(rdeck, 0.30 * F, 0.09 * LENGTH, 0.435 * LENGTH, 0, zdeck, "joroba_salida")
 
-# ---------- 3. alas ----------
+# ---------- 3. alas (con kink si KINK) ----------
 xw = WPOS * LENGTH
 cr = 0.30 * LENGTH
 ct = 0.42 * cr
 dy = 0.5 * SPAN - 1.5
 sweep_back = math.tan(SWEEP) * dy
-for sgn in (1, -1):
-    y0, y1 = 8 * sgn, dy * sgn
-    le0, le1 = xw, xw - sweep_back
-    extrude_poly([(le0, y0), (le1, y1), (le1 - ct, y1), (le0 - cr, y0)],
-                 -THICK / 2, THICK / 2, "ala")
+if KINK:
+    SWI = math.radians(float(P.get("SWEEP_IN", 52)))
+    yk = dy * 0.45
+    crk = cr * 0.60
+    sb_in = math.tan(SWI) * yk
+    sb_out = math.tan(SWEEP) * (dy - yk)
+    for sgn in (1, -1):
+        extrude_poly([(xw, 8 * sgn), (xw - sb_in, yk * sgn), (xw - sb_in - crk, yk * sgn), (xw - cr, 8 * sgn)],
+                     -THICK / 2, THICK / 2, "ala_in")
+        extrude_poly([(xw - sb_in, yk * sgn), (xw - sb_in - sb_out, dy * sgn),
+                      (xw - sb_in - sb_out - ct, dy * sgn), (xw - sb_in - crk, yk * sgn)],
+                     -THICK / 2, THICK / 2, "ala_out")
+else:
+    for sgn in (1, -1):
+        y0, y1 = 8 * sgn, dy * sgn
+        le0, le1 = xw, xw - sweep_back
+        extrude_poly([(le0, y0), (le1, y1), (le1 - ct, y1), (le0 - cr, y0)],
+                     -THICK / 2, THICK / 2, "ala")
 
 # ---------- 4. motores completos ----------
 if NE:
@@ -175,6 +192,47 @@ if GEAR:
             cyl_y(0.5 * wr, wr * 2.9, xm + dx, ym, zm, "eje_main")
             for sy in (1, -1):
                 cyl_y(wr, 2.2, xm + dx, ym + sy * wr * 1.1, zm, "rueda_main")
+
+# ---------- 7.5 ventanas en relieve ----------
+if WINDOWS:
+    zc = 0.35 * F
+    yb = math.sqrt(max(F * F - zc * zc, 1.0))
+    wx0, wx1 = 0.04 * LENGTH, 0.50 * LENGTH
+    step = 5.2
+    nwin = int((wx1 - wx0) / step)
+    for sgn in (1, -1):
+        for i in range(nwin):
+            x = wx0 + i * step
+            extrude_poly([(x, sgn * yb - 1.3), (x + 2.6, sgn * yb - 1.3),
+                          (x + 2.6, sgn * yb + 1.3), (x, sgn * yb + 1.3)],
+                         zc - 0.8, zc + 0.8, "ventana")
+    if HUMP:
+        zd = 1.05 * F
+        rd = 0.80 * F
+        yd = math.sqrt(max(rd * rd - (0.35 * F) ** 2, 1.0))
+        for sgn in (1, -1):
+            for i in range(11):
+                x = 0.145 * LENGTH + i * 4.4
+                extrude_poly([(x, sgn * yd - 1.0), (x + 2.2, sgn * yd - 1.0),
+                              (x + 2.2, sgn * yd + 1.0), (x, sgn * yd + 1.0)],
+                             zd + 0.35 * F - 0.7, zd + 0.35 * F + 0.7, "ventana_deck")
+
+# ---------- 7.6 carenado ventral ----------
+if FAIRING:
+    fair = prism_cone_z(1, 1, -1, 1, 24)
+    fair.scale = (cr * 0.55, F * 0.95, 5.2)
+    fair.location = (xw - cr * 0.35, 0, -F + 1.0)
+    fair.name = "carenado"
+
+# ---------- 7.7 banda de cabina ----------
+if COCKPIT:
+    zc2 = 0.55 * F
+    yc2 = math.sqrt(max(F * F - zc2 * zc2, 1.0))
+    xc = 0.68 * LENGTH
+    for sgn in (1, -1):
+        extrude_poly([(xc - 7, sgn * yc2 - 3.5), (xc + 8, sgn * yc2 - 3.5),
+                      (xc + 8, sgn * yc2 + 3.5), (xc - 7, sgn * yc2 + 3.5)],
+                     zc2 - 0.9, zc2 + 0.9, "cabina")
 
 # ---------- 8. union + remesh voxel ----------
 meshes = [o for o in SC.objects if o.type == "MESH"]
