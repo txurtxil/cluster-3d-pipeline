@@ -101,9 +101,11 @@ me = bpy.data.meshes.new("fuselaje"); me.from_pydata(verts, [], faces); me.updat
 fuse = bpy.data.objects.new("fuselaje", me); SC.collection.objects.link(fuse)
 fuse.rotation_euler = (0, math.pi / 2, 0)
 
-# ---------- 2. joroba del segundo nivel ----------
+# ---------- 2. joroba del segundo nivel (semienterrada = cubierta integrada) ----------
 if HUMP:
-    cyl_x(0.62 * FUSER, 0.28 * LENGTH, 0.28 * LENGTH, 0, 0.95 * FUSER, "joroba")
+    # DEFECTO juez v0: parecia un cilindro transversal suelto. Fix: mitad
+    # inferior DENTRO del fuselaje (solo emerge la cubierta) y mas larga.
+    cyl_x(0.75 * FUSER, 0.30 * LENGTH, 0.33 * LENGTH, 0, 0.98 * FUSER, "joroba")
 
 # ---------- 3. alas en flecha ----------
 xw = WPOS * LENGTH
@@ -123,8 +125,13 @@ if NE:
         side = 1 if i % 2 == 0 else -1
         k = i // 2
         y = side * (dy * (0.35 + 0.45 * k))
-        cyl_x(0.16 * FUSER, 0.20 * cr, xw - 0.5 * cr, y,
-              -THICK / 2 - 0.16 * FUSER, "motor")
+        # DEFECTO juez v0: tangente al ala (sin solape) = parecia suelto.
+        # Fix: 2 mm de solape dentro del intrados + pilon de union visible.
+        ez = -THICK / 2 - 0.16 * FUSER + 2.0
+        cyl_x(0.16 * FUSER, 0.20 * cr, xw - 0.5 * cr, y, ez, "motor")
+        extrude_poly([(xw - 0.55 * cr, y - 1.2), (xw - 0.45 * cr, y - 1.2),
+                      (xw - 0.45 * cr, y + 1.2), (xw - 0.55 * cr, y + 1.2)],
+                     ez, -THICK / 2 + 0.5, "pilon")
 
 # ---------- 5. cola ----------
 if TAIL:
@@ -133,7 +140,8 @@ if TAIL:
     xt = 0.88 * LENGTH
     for sgn in (1, -1):
         y1 = span_t * 0.5 * sgn
-        extrude_poly([(xt, 6 * sgn), (xt - ct_ch * 0.3, y1),
+        # raiz del estabilizador METIDA dentro del cono de cola (union visible)
+        extrude_poly([(xt + 0.05 * LENGTH, 6 * sgn), (xt - ct_ch * 0.3, y1),
                       (xt - ct_ch, y1), (xt - ct_ch, 6 * sgn)],
                      -THICK * 0.6, THICK * 0.6, "estab")
     extrude_poly([(xt, 0), (xt - ct_ch, 0), (xt - ct_ch * 0.55, 2.6 * FUSER),
@@ -152,16 +160,19 @@ if WINGLETS:
 # ---------- 7. tren de aterrizaje (morro + 2 principales) ----------
 if GEAR:
     wr = 0.35 * FUSER          # radio rueda
-    # morro
-    cyl_v(1.2, -FUSER - 3 * wr, -FUSER, 0.10 * LENGTH, 0, "puntal_morro")
+    # morro (puntal metido en el vientre + rueda con eje)
+    cyl_v(1.3, -FUSER - 3 * wr - wr, -FUSER + 1.0, 0.10 * LENGTH, 0, "puntal_morro")
     cyl_y(wr, 2.4, 0.10 * LENGTH, 0, -FUSER - 3 * wr - wr, "rueda_morro")
-    # principales (2 conjuntos separados, 2 ruedas visibles cada uno)
+    cyl_y(0.35 * wr, wr * 2.8, 0.10 * LENGTH, 0, -FUSER - 3 * wr - wr, "eje_morro")
+    # principales (2 conjuntos, ruedas JUNTAS + eje que las une, todo pegado)
     for sgn in (1, -1):
         y = sgn * 1.15 * FUSER
-        cyl_v(1.4, -FUSER - 4 * wr, -FUSER, 0.45 * LENGTH, y, "puntal_main")
-        for sy in (0.8, -0.8):
-            cyl_y(wr, 3.0, 0.45 * LENGTH, y + wr * 2.4 * sy,
-                  -FUSER - 4 * wr - wr, "rueda_main")
+        zw = -FUSER - 4 * wr - wr
+        cyl_v(1.6, zw + wr, -FUSER + 1.0, 0.45 * LENGTH, y, "puntal_main")
+        for sy in (0.9, -0.9):
+            cyl_y(wr, 3.0, 0.45 * LENGTH, y + wr * 1.6 * sy, zw, "rueda_main")
+        # eje transversal que ensambla las 2 ruedas con el puntal
+        cyl_y(0.35 * wr, wr * 3.6, 0.45 * LENGTH, y, zw, "eje_main")
 
 # ---------- 8. chaflan + export ----------
 if CH > 0:
