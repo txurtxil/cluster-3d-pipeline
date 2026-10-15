@@ -133,6 +133,11 @@ else:
         extrude_poly([(le0, y0), (le1, y1), (le1 - ct, y1), (le0 - cr, y0)],
                      -THICK / 2, THICK / 2, "ala")
 
+if KINK:
+    tip_x = xw - sb_in - sb_out - ct * 0.5
+else:
+    tip_x = xw - sweep_back - ct * 0.5
+
 # ---------- 4. motores completos ----------
 if NE:
     nac_r = 0.42 * F
@@ -173,7 +178,7 @@ if WINGLETS:
         wl = extrude_poly([(0, 0), (0.12 * LENGTH, 0), (0.10 * LENGTH, 14),
                            (0.02 * LENGTH, 14)], -1.5, 1.5, "winglet")
         wl.rotation_euler = (math.pi / 2, 0, 0)
-        wl.location = (xw - sweep_back - ct * 0.5, y, 0)
+        wl.location = (tip_x, y, 0)
 
 # ---------- 7. tren ----------
 if GEAR:
