@@ -98,8 +98,8 @@ fuse.rotation_euler = (0, math.pi / 2, 0)
 
 # ---------- 2. cubierta superior ----------
 if HUMP:
-    rdeck = 0.62 * F
-    zdeck = 0.80 * F
+    rdeck = 0.80 * F
+    zdeck = 1.05 * F
     cone_x(0.35 * F, rdeck, 0.07 * LENGTH, 0.155 * LENGTH, 0, zdeck, "joroba_frente")
     cyl_x(rdeck, 0.20 * LENGTH, 0.29 * LENGTH, 0, zdeck, "joroba_cubierta")
     cone_x(rdeck, 0.30 * F, 0.09 * LENGTH, 0.435 * LENGTH, 0, zdeck, "joroba_salida")
@@ -118,8 +118,8 @@ for sgn in (1, -1):
 
 # ---------- 4. motores completos ----------
 if NE:
-    nac_r = 0.17 * F
-    nac_l = 0.17 * cr
+    nac_r = 0.42 * F
+    nac_l = 0.30 * cr
     for i in range(NE):
         side = 1 if i % 2 == 0 else -1
         inner = (i % 4) < 2
@@ -127,9 +127,9 @@ if NE:
         y = side * (dy * (0.32 + 0.28 * k))
         xe = xw - cr * (0.30 + 0.20 * k)
         ez = -THICK / 2 - nac_r + 1.5
-        cone_x(0.21 * F, nac_r, 0.05 * cr, xe + nac_l / 2, y, ez, "entrada")
+        cone_x(0.45 * F, nac_r, 0.05 * cr, xe + nac_l / 2, y, ez, "entrada")
         cyl_x(nac_r, nac_l, xe, y, ez, "gondola")
-        cone_x(nac_r, 0.12 * F, 0.04 * cr, xe - nac_l / 2 - 0.02 * cr, y, ez, "salida")
+        cone_x(nac_r, 0.28 * F, 0.04 * cr, xe - nac_l / 2 - 0.02 * cr, y, ez, "salida")
         extrude_poly([(xe - 0.30 * cr, y - 1.3), (xe + 0.10 * cr, y - 1.3),
                       (xe + 0.10 * cr, y + 1.3), (xe - 0.30 * cr, y + 1.3)],
                      ez - 0.2, -THICK / 2 + 0.8, "pilon")
