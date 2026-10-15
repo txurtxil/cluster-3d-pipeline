@@ -1,0 +1,14 @@
+{
+  "dims": {
+    "L": 178.85,
+    "W": 152.0,
+    "H": 56.04
+  },
+  "manifold": {
+    "ok": true
+  },
+  "components": 21,
+  "not_measured": [
+    "metrologia especifica: la pieza aun no es familia registrada"
+  ]
+}

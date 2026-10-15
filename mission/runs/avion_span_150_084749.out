@@ -1,0 +1,5 @@
+[08:47:50] PLAN: parametros inyectados (test) {'SPAN': 150.0, 'LENGTH': 180.0, 'ENGINES': 4.0, 'SWEEP': 30.0, 'FUSE_R': 12.0, 'THICK_W': 4.0, 'WING_POS': 0.45, 'TAIL': 1.0, 'WINGLETS': 1.0, 'CHAMFER': 1.0}
+[08:47:50] ITER 1 [INYECCION TEST]: construyendo y midiendo...
+[08:47:51] ITER 1 medidas: dims={'L': 180.0, 'W': 150.0, 'H': 56.04} wall_min=N/A manifold=True
+[08:47:51] ITER 1: todas las HARD constraints pasan
+[08:47:51] VERDICT=PASS razon=convergencia -> /home/txurtxil/cluster-3d-pipeline/mission/runs/avion_span_150_084749/REPORT.md
