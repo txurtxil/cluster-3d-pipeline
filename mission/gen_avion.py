@@ -1,14 +1,14 @@
-"""gen_avion.py — Avion de ala fija parametrico (familia 7 del pipeline).
+"""gen_avion.py v2 — Avion parametrico, especificacion 747 (familia 7 v2).
 Uso: blender -b --factory-startup -P gen_avion.py -- <params.json> <out.blend> <out.stl>
 
-Fase "no se duerme hasta solucionar": la geometria del avion ES ingenieria
-(sweep, perfiles, estabilidad) -> va en codigo deterministico, como la taza
-o el engranaje. El cerebro local solo elige PARAMETROS (datos), que es lo
-suyo. /pide un avion de 150 de envergadura con 4 motores -> avion real.
+Criterios cubiertos (aprobacion 15-oct): fuselaje con morro/cola, JOROBA del
+segundo nivel, 2 alas en flecha, 4 motores bajo las alas, TREN DE ATERRIZAJE
+(3 conjuntos: morro + 2 principales, puntales y ruedas), cola (estab+timon),
+winglets, malla valida, STL determinista.
 
-Parametros: SPAN, LENGTH, ENGINES(2|4), SWEEP(grados), FUSE_R, THICK_W,
-WING_POS (0..1 posicion del ala), TAIL(0/1), WINGLETS(0/1), CHAMFER.
-Orientacion final: fuselaje en X (morro +X), envergadura en Y, vertical Z.
+Parametros: SPAN, LENGTH, ENGINES(2|4), SWEEP, FUSE_R, THICK_W, WING_POS,
+TAIL(0/1), WINGLETS(0/1), HUMP(0/1), GEAR(0/1), CHAMFER.
+Orientacion: fuselaje en X (morro +X), envergadura Y, vertical Z.
 """
 import bpy, json, sys, math
 
@@ -25,6 +25,8 @@ THICK = float(P.get("THICK_W", 4))
 WPOS = float(P.get("WING_POS", 0.45))
 TAIL = int(P.get("TAIL", 1))
 WINGLETS = int(P.get("WINGLETS", 1))
+HUMP = int(P.get("HUMP", 1))
+GEAR = int(P.get("GEAR", 1))
 CH = float(P.get("CHAMFER", 1.0))
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -32,7 +34,6 @@ SC = bpy.context.scene
 
 
 def extrude_poly(points, z0, z1, name):
-    """Poligono 2D (x,y) extruido en Z."""
     n = len(points)
     v = [(x, y, z0) for (x, y) in points] + [(x, y, z1) for (x, y) in points]
     f = [tuple(range(n - 1, -1, -1)), tuple(range(n, 2 * n))]
@@ -54,7 +55,33 @@ def prism_z(radius, z0, z1, seg=32):
     return o
 
 
-# ---------- 1. fuselaje: perfil (r, z) revolucionado, luego girado a X ----------
+def cyl_x(radius, length, x, y, z, name):
+    """Cilindro con eje en X."""
+    o = prism_z(radius, -length / 2, length / 2, seg=24)
+    o.rotation_euler = (0, math.pi / 2, 0)
+    o.location = (x, y, z)
+    o.name = name
+    return o
+
+
+def cyl_y(radius, length, x, y, z, name):
+    """Cilindro con eje en Y (ruedas)."""
+    o = prism_z(radius, -length / 2, length / 2, seg=24)
+    o.rotation_euler = (math.pi / 2, 0, 0)
+    o.location = (x, y, z)
+    o.name = name
+    return o
+
+
+def cyl_v(radius, z0, z1, x, y, name):
+    """Cilindro vertical (puntales)."""
+    o = prism_z(radius, z0, z1, seg=16)
+    o.location = (x, y, 0)
+    o.name = name
+    return o
+
+
+# ---------- 1. fuselaje ----------
 prof = [(0.0, 0.0), (FUSER, 0.06 * LENGTH), (FUSER, 0.72 * LENGTH),
         (0.35 * FUSER, LENGTH)]
 SEGS = 48
@@ -72,34 +99,34 @@ for i in range(SEGS):
         faces.append((i * n + k, j * n + k, j * n + k2, i * n + k2))
 me = bpy.data.meshes.new("fuselaje"); me.from_pydata(verts, [], faces); me.update()
 fuse = bpy.data.objects.new("fuselaje", me); SC.collection.objects.link(fuse)
-fuse.rotation_euler = (0, math.pi / 2, 0)          # eje Z -> eje X (morro +X)
+fuse.rotation_euler = (0, math.pi / 2, 0)
 
-# ---------- 2. ala: poligono en flecha (envergadura Y, cuerda X) ----------
-xw = WPOS * LENGTH                     # posicion del borde de ataque del ala
-cr = 0.30 * LENGTH                     # cuerda en raiz
-ct = 0.42 * cr                         # cuerda en punta
-dy = 0.5 * SPAN
-sweep_back = math.tan(SWEEP) * dy      # retraso de la punta (hacia -X)
-pts = []
+# ---------- 2. joroba del segundo nivel ----------
+if HUMP:
+    cyl_x(0.62 * FUSER, 0.28 * LENGTH, 0.28 * LENGTH, 0, 0.95 * FUSER, "joroba")
+
+# ---------- 3. alas en flecha ----------
+xw = WPOS * LENGTH
+cr = 0.30 * LENGTH
+ct = 0.42 * cr
+dy = 0.5 * SPAN - 1.5          # las puntas del ala se miden CON winglet (±1.5)
+sweep_back = math.tan(SWEEP) * dy
 for sgn in (1, -1):
     y0, y1 = 8 * sgn, dy * sgn
     le0, le1 = xw, xw - sweep_back
-    pts.append([(le0, y0), (le1, y1), (le1 - ct, y1), (le0 - cr, y0)])
-    wing = extrude_poly(pts[-1], -THICK / 2, THICK / 2, "ala")
+    extrude_poly([(le0, y0), (le1, y1), (le1 - ct, y1), (le0 - cr, y0)],
+                 -THICK / 2, THICK / 2, "ala")
 
-# ---------- 3. motores: cilindros bajo el ala (eje X) ----------
-engines = []
+# ---------- 4. motores (pegados al intrados del ala) ----------
 if NE:
     for i in range(NE):
         side = 1 if i % 2 == 0 else -1
         k = i // 2
         y = side * (dy * (0.35 + 0.45 * k))
-        e = prism_z(0.16 * FUSER, -THICK / 2, THICK / 2 + 0.02 * cr, seg=24)
-        e.rotation_euler = (0, math.pi / 2, 0)
-        e.location = (xw - 0.5 * cr, y, -FUSER - 0.12 * cr)
-        engines.append(e)
+        cyl_x(0.16 * FUSER, 0.20 * cr, xw - 0.5 * cr, y,
+              -THICK / 2 - 0.16 * FUSER, "motor")
 
-# ---------- 4. cola ----------
+# ---------- 5. cola ----------
 if TAIL:
     ct_ch = 0.16 * LENGTH
     span_t = 0.32 * SPAN
@@ -113,19 +140,34 @@ if TAIL:
                   (xt - ct_ch * 0.15, 2.6 * FUSER)],
                  -THICK * 0.6, THICK * 0.6, "timon")
 
+# ---------- 6. winglets ----------
 if WINGLETS:
     for sgn in (1, -1):
         y = dy * sgn
         wl = extrude_poly([(0, 0), (0.12 * LENGTH, 0), (0.10 * LENGTH, 14),
                            (0.02 * LENGTH, 14)], -1.5, 1.5, "winglet")
-        wl.rotation_euler = (math.pi / 2, 0, 0)   # de pie en la punta
+        wl.rotation_euler = (math.pi / 2, 0, 0)
         wl.location = (xw - sweep_back - ct * 0.5, y, 0)
 
-# ---------- 5. chaflan + export ----------
+# ---------- 7. tren de aterrizaje (morro + 2 principales) ----------
+if GEAR:
+    wr = 0.35 * FUSER          # radio rueda
+    # morro
+    cyl_v(1.2, -FUSER - 3 * wr, -FUSER, 0.10 * LENGTH, 0, "puntal_morro")
+    cyl_y(wr, 2.4, 0.10 * LENGTH, 0, -FUSER - 3 * wr - wr, "rueda_morro")
+    # principales (2 conjuntos separados, 2 ruedas visibles cada uno)
+    for sgn in (1, -1):
+        y = sgn * 1.15 * FUSER
+        cyl_v(1.4, -FUSER - 4 * wr, -FUSER, 0.45 * LENGTH, y, "puntal_main")
+        for sy in (0.8, -0.8):
+            cyl_y(wr, 3.0, 0.45 * LENGTH, y + wr * 2.4 * sy,
+                  -FUSER - 4 * wr - wr, "rueda_main")
+
+# ---------- 8. chaflan + export ----------
 if CH > 0:
-    for o in SC.objects:
-        if o.type != "MESH":
-            continue
+    for o in list(SC.objects):
+        if o.type != "MESH" or o.name == "fuselaje":
+            continue   # el chaflan comia ~1.15 mm de las puntas del fuselaje
         for q in SC.objects:
             q.select_set(False)
         o.select_set(True)
